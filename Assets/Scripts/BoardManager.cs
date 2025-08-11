@@ -53,4 +53,9 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    public void OnColorSelected(Tile.TileColor color)
+    {
+        Debug.Log("Màu" + color);
+    }
+
 }
