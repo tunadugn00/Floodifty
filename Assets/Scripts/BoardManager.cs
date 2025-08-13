@@ -16,6 +16,7 @@ public class BoardManager : MonoBehaviour
     public int colorCount = 4;
 
     private Tile[,] tiles;
+    public Tile.TileColor selectedColor;
 
     void Start()
     {
@@ -26,7 +27,6 @@ public class BoardManager : MonoBehaviour
     {
         tiles = new Tile[rows, cols];
 
-        // Tính offset để bảng nằm giữa
         float offsetX = -(cols - 1) / 2f * cellSize;
         float offsetY = -(rows - 1) / 2f * cellSize;
 
@@ -36,7 +36,7 @@ public class BoardManager : MonoBehaviour
             {
                 Vector3 pos = new Vector3(c * cellSize + offsetX, r * cellSize + offsetY, 0);
 
-                GameObject tileObj = Instantiate(tilePrefab, transform); // spawn làm con của BoardManager ngay từ đầu
+                GameObject tileObj = Instantiate(tilePrefab, transform);
                 tileObj.transform.localPosition = new Vector3(c * cellSize + offsetX, r * cellSize + offsetY, 0);
 
 
@@ -55,7 +55,33 @@ public class BoardManager : MonoBehaviour
 
     public void OnColorSelected(Tile.TileColor color)
     {
-        Debug.Log("Màu" + color);
+        selectedColor = color;
+        // Debug.Log("Selected: " + color);
+    }
+
+    public void OnTileClicked(int r, int c)
+    {
+        Tile.TileColor originalColor = tiles[r,c].Color;
+
+        if (originalColor == selectedColor) return;
+
+        FloodFill(r, c, originalColor, selectedColor);
+    }
+
+    void FloodFill(int r, int c, Tile.TileColor targetColor, Tile.TileColor replacementColor)
+    {
+        if (r < 0 || r >= rows || c < 0 || c >= cols)
+            return;
+        if (tiles[r, c].Color != targetColor) return;
+
+        tiles[r, c].Color = replacementColor;
+        tiles[r, c].GetComponent<SpriteRenderer>().sprite = colorSprites[(int)replacementColor];
+
+        FloodFill(r + 1, c, targetColor, replacementColor);
+        FloodFill(r - 1, c, targetColor, replacementColor);
+        FloodFill(r, c + 1, targetColor, replacementColor);
+        FloodFill(r, c - 1, targetColor, replacementColor);
+
     }
 
 }

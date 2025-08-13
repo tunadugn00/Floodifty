@@ -7,4 +7,10 @@ public class Tile : MonoBehaviour
     public int Row;
     public int Col;
     public TileColor Color;
+
+    public void OnMouseDown()
+    {
+        Debug.Log($"Tile clicked at {Row},{Col} with color {Color}");
+        FindFirstObjectByType<BoardManager>().OnTileClicked(Row, Col);
+    }
 }
