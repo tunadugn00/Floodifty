@@ -12,15 +12,18 @@ public class BoardManager : MonoBehaviour
     public Sprite[] colorSprites;
 
     [Header("Game state")]
-    public int movesLeft = 20;
     public int colorCount = 4;
-
     private Tile[,] tiles;
     public Tile.TileColor selectedColor;
+    public Tile.TileColor goalColor;
+    public int movesLeft = 5;
+
+    public UIController uiController;
 
     void Start()
     {
         GenerateBoard();
+        goalColor = Tile.TileColor.Red;
     }
 
     void GenerateBoard()
@@ -66,6 +69,17 @@ public class BoardManager : MonoBehaviour
         if (originalColor == selectedColor) return;
 
         FloodFill(r, c, originalColor, selectedColor);
+        movesLeft--;
+        uiController.UpdateMove(movesLeft);
+
+        if (CheckWin())
+        {
+            uiController.UIWin();
+        }
+        else if (movesLeft<=0)
+        {
+            uiController.UILose();
+        }
     }
 
     void FloodFill(int r, int c, Tile.TileColor targetColor, Tile.TileColor replacementColor)
@@ -82,6 +96,19 @@ public class BoardManager : MonoBehaviour
         FloodFill(r, c + 1, targetColor, replacementColor);
         FloodFill(r, c - 1, targetColor, replacementColor);
 
+    }
+
+    bool CheckWin()
+    {
+        for(int r =0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                if (tiles[r, c].Color != goalColor)
+                    return false;
+            }
+        }
+        return true;
     }
 
 }
