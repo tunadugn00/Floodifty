@@ -185,8 +185,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65ea0ab0e26bcc548b9a2127a12e1fce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rows: 8
-  cols: 10
   cellSize: 1
   tilePrefab: {fileID: 6962980428847700621, guid: a711e4e35b86e654193be327b8fefe5f, type: 3}
   colorSprites:
@@ -194,11 +192,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: dd18c1041a1dd644e928edd6966fe631, type: 3}
   - {fileID: 21300000, guid: f8b6789e0e42dce499f0feee367df283, type: 3}
   - {fileID: 21300000, guid: c0f6f16c65c19674ab33bfa619fe2a73, type: 3}
-  colorCount: 4
-  selectedColor: 0
-  goalColor: 0
-  movesLeft: 20
   uiController: {fileID: 1990203009}
+  currentLevel: {fileID: 11400000, guid: b3eb90379f89bc74994165b621473dca, type: 2}
 --- !u!4 &191451681
 Transform:
   m_ObjectHideFlags: 0

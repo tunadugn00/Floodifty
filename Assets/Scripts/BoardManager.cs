@@ -2,34 +2,49 @@
 
 public class BoardManager : MonoBehaviour
 {
-    [Header("Board size")]
-    public int rows = 8;
-    public int cols = 8;
+    [Header("Board Settings")]
     public float cellSize = 1f;
-
-    [Header("Prefabs & art")]
     public GameObject tilePrefab;
     public Sprite[] colorSprites;
-
-    [Header("Game state")]
-    public int colorCount = 4;
-    private Tile[,] tiles;
-    public Tile.TileColor selectedColor;
-    public Tile.TileColor goalColor;
-    public int movesLeft = 5;
-
     public UIController uiController;
+
+    [Header("Level Data")]
+    public LevelData currentLevel;
+
+    private Tile[,] tiles;
+    private int rows, cols;
+    private Tile.TileColor goalColor;
+    private int movesLeft;
+    private Tile.TileColor selectedColor;
 
     void Start()
     {
-        GenerateBoard();
-        goalColor = Tile.TileColor.Red;
+        if (currentLevel != null)
+            LoadLevel(currentLevel);
+        else
+            Debug.LogError("No LevelData assigned!");
     }
 
-    void GenerateBoard()
+    // Load level từ LevelData
+    public void LoadLevel(LevelData data)
     {
-        tiles = new Tile[rows, cols];
+        rows = data.rows;
+        cols = data.cols;
+        goalColor = data.targetColor;
+        movesLeft = data.movesAllowed;
 
+        uiController?.UpdateMove(movesLeft);
+
+        GenerateBoard(data);
+    }
+
+    // Sinh board từ LevelData
+    private void GenerateBoard(LevelData data)
+    {
+        // Clear board cũ
+        foreach (Transform t in transform) Destroy(t.gameObject);
+
+        tiles = new Tile[rows, cols];
         float offsetX = -(cols - 1) / 2f * cellSize;
         float offsetY = -(rows - 1) / 2f * cellSize;
 
@@ -37,19 +52,16 @@ public class BoardManager : MonoBehaviour
         {
             for (int c = 0; c < cols; c++)
             {
-                Vector3 pos = new Vector3(c * cellSize + offsetX, r * cellSize + offsetY, 0);
-
                 GameObject tileObj = Instantiate(tilePrefab, transform);
                 tileObj.transform.localPosition = new Vector3(c * cellSize + offsetX, r * cellSize + offsetY, 0);
-
 
                 Tile tile = tileObj.GetComponent<Tile>();
                 tile.Row = r;
                 tile.Col = c;
 
-                int colorIndex = Random.Range(0, colorCount);
-                tile.Color = (Tile.TileColor)colorIndex;
-                tileObj.GetComponent<SpriteRenderer>().sprite = colorSprites[colorIndex];
+                var color = data.Get(r, c);
+                tile.Color = color;
+                tileObj.GetComponent<SpriteRenderer>().sprite = colorSprites[(int)color];
 
                 tiles[r, c] = tile;
             }
@@ -59,33 +71,27 @@ public class BoardManager : MonoBehaviour
     public void OnColorSelected(Tile.TileColor color)
     {
         selectedColor = color;
-        // Debug.Log("Selected: " + color);
     }
 
     public void OnTileClicked(int r, int c)
     {
-        Tile.TileColor originalColor = tiles[r,c].Color;
-
+        Tile.TileColor originalColor = tiles[r, c].Color;
         if (originalColor == selectedColor) return;
 
         FloodFill(r, c, originalColor, selectedColor);
+
         movesLeft--;
-        uiController.UpdateMove(movesLeft);
+        uiController?.UpdateMove(movesLeft);
 
         if (CheckWin())
-        {
-            uiController.UIWin();
-        }
-        else if (movesLeft<=0)
-        {
-            uiController.UILose();
-        }
+            uiController?.UIWin();
+        else if (movesLeft <= 0)
+            uiController?.UILose();
     }
 
-    void FloodFill(int r, int c, Tile.TileColor targetColor, Tile.TileColor replacementColor)
+    private void FloodFill(int r, int c, Tile.TileColor targetColor, Tile.TileColor replacementColor)
     {
-        if (r < 0 || r >= rows || c < 0 || c >= cols)
-            return;
+        if (r < 0 || r >= rows || c < 0 || c >= cols) return;
         if (tiles[r, c].Color != targetColor) return;
 
         tiles[r, c].Color = replacementColor;
@@ -95,12 +101,11 @@ public class BoardManager : MonoBehaviour
         FloodFill(r - 1, c, targetColor, replacementColor);
         FloodFill(r, c + 1, targetColor, replacementColor);
         FloodFill(r, c - 1, targetColor, replacementColor);
-
     }
 
-    bool CheckWin()
+    private bool CheckWin()
     {
-        for(int r =0; r < rows; r++)
+        for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < cols; c++)
             {
@@ -110,5 +115,4 @@ public class BoardManager : MonoBehaviour
         }
         return true;
     }
-
 }
