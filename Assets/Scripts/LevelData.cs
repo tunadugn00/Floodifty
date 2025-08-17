@@ -4,8 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName ="LevelData", menuName ="Floodify/Level Data")]
 public class LevelData : ScriptableObject
 {
-    [Min(1)] public int rows = 8;
-    [Min(1)] public int cols = 10;
+    [Min(1)] public int rows = 10;
+    [Min(1)] public int cols = 8;
 
     public Tile.TileColor targetColor = Tile.TileColor.Red;
     [Min(1)] public int movesAllowed = 5;

@@ -25,7 +25,7 @@ public class BoardManager : MonoBehaviour
             Debug.LogError("No LevelData assigned!");
     }
 
-    // Load level từ LevelData
+    // Load level from LevelData
     public void LoadLevel(LevelData data)
     {
         rows = data.rows;
@@ -33,15 +33,16 @@ public class BoardManager : MonoBehaviour
         goalColor = data.targetColor;
         movesLeft = data.movesAllowed;
 
-        uiController?.UpdateMove(movesLeft);
+        uiController?.SetMove(movesLeft);
+        uiController?.SetGoal(goalColor);
 
         GenerateBoard(data);
     }
 
-    // Sinh board từ LevelData
+    // spawn board from LevelData
     private void GenerateBoard(LevelData data)
     {
-        // Clear board cũ
+        // Clear old board 
         foreach (Transform t in transform) Destroy(t.gameObject);
 
         tiles = new Tile[rows, cols];
@@ -81,7 +82,7 @@ public class BoardManager : MonoBehaviour
         FloodFill(r, c, originalColor, selectedColor);
 
         movesLeft--;
-        uiController?.UpdateMove(movesLeft);
+        uiController?.SetMove(movesLeft);
 
         if (CheckWin())
             uiController?.UIWin();
