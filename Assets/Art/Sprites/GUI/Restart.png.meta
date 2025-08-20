@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: bbbbb6dbb9460994d9d45244af60b427
+guid: 086a3bac73811984b81e52d889418bf1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7993771713063533466
-    second: Window(1)(1)_0
+      213: -4197409119489575744
+    second: Button(1)(1)_0
+  - first:
+      213: -6007510198647406596
+    second: Button(1)(1)_1
+  - first:
+      213: 1025294254028890860
+    second: Button(1)(1)_2
+  - first:
+      213: 298298548200514659
+    second: Button(1)(1)_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +122,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Window(1)(1)_0
+      name: Button(1)(1)_0
       rect:
         serializedVersion: 2
-        x: 64
-        y: 49
-        width: 374
-        height: 564
+        x: 41
+        y: 8
+        width: 184
+        height: 193
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +137,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a9bb7bc25059fee60800000000000000
-      internalID: 7993771713063533466
+      spriteID: 0c4b6d705aecfb5c0800000000000000
+      internalID: -4197409119489575744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Button(1)(1)_1
+      rect:
+        serializedVersion: 2
+        x: 245
+        y: 8
+        width: 184
+        height: 193
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cffb511bd4901aca0800000000000000
+      internalID: -6007510198647406596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Button(1)(1)_2
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 8
+        width: 184
+        height: 193
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce224a911b39a3e00800000000000000
+      internalID: 1025294254028890860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Button(1)(1)_3
+      rect:
+        serializedVersion: 2
+        x: 654
+        y: 8
+        width: 184
+        height: 193
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 364a18af2f4c32400800000000000000
+      internalID: 298298548200514659
       vertices: []
       indices: 
       edges: []
@@ -148,7 +223,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Window(1)(1)_0: 7993771713063533466
+      Button(1)(1)_0: -4197409119489575744
+      Button(1)(1)_1: -6007510198647406596
+      Button(1)(1)_2: 1025294254028890860
+      Button(1)(1)_3: 298298548200514659
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

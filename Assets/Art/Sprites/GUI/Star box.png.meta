@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: bbbbb6dbb9460994d9d45244af60b427
+guid: 167f4f687d976254386e71f7f4394ff1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7993771713063533466
-    second: Window(1)(1)_0
+      213: 4025828231547353107
+    second: Star box_0
+  - first:
+      213: -648985021463169933
+    second: Star box_1
+  - first:
+      213: 8006545365358640973
+    second: Star box_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +52,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -113,23 +119,67 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Window(1)(1)_0
+      name: Star box_0
       rect:
         serializedVersion: 2
-        x: 64
-        y: 49
-        width: 374
-        height: 564
+        x: 12
+        y: 11
+        width: 162
+        height: 159
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a9bb7bc25059fee60800000000000000
-      internalID: 7993771713063533466
+      spriteID: 3187e14627d9ed730800000000000000
+      internalID: 4025828231547353107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Star box_1
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 42
+        width: 212
+        height: 209
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 374732bbf875ef6f0800000000000000
+      internalID: -648985021463169933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Star box_2
+      rect:
+        serializedVersion: 2
+        x: 335
+        y: 11
+        width: 161
+        height: 159
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4f704cd696fc1f60800000000000000
+      internalID: 8006545365358640973
       vertices: []
       indices: 
       edges: []
@@ -138,7 +188,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +198,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Window(1)(1)_0: 7993771713063533466
+      Star box_0: 4025828231547353107
+      Star box_1: -648985021463169933
+      Star box_2: 8006545365358640973
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

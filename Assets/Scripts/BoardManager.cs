@@ -68,6 +68,16 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
+    public void ResetBoard()
+    {
+        movesLeft = currentLevel.movesAllowed;
+        uiController?.SetMove(movesLeft);
+
+        goalColor = currentLevel.targetColor;
+        uiController?.SetGoal(goalColor);
+
+        GenerateBoard(currentLevel);
+    }
 
     public void OnColorSelected(Tile.TileColor color)
     {
@@ -76,6 +86,8 @@ public class BoardManager : MonoBehaviour
 
     public void OnTileClicked(int r, int c)
     {
+        if (!GameManager.Instance.IsGameActive()) return;
+
         Tile.TileColor originalColor = tiles[r, c].Color;
         if (originalColor == selectedColor) return;
 
