@@ -6,16 +6,11 @@ public class GameManager : MonoBehaviour
 
     public enum GameState { Playing, Pause, Won, Lost}
     public GameState CurrentState {  get; private set; } = GameState.Playing;
-    public GameState state;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
-    }
-    private void Start()
-    {
-        state = CurrentState;
     }
 
     public void SetState(GameState newState)
