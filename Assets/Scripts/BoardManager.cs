@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class BoardManager : MonoBehaviour
 {
@@ -7,6 +9,7 @@ public class BoardManager : MonoBehaviour
     public GameObject tilePrefab;
     public Sprite[] colorSprites;
     public UIController uiController;
+    public FloodFillAnimator floodAnimator;
 
     [Header("Level Data")]
     public LevelData currentLevel;
@@ -37,6 +40,7 @@ public class BoardManager : MonoBehaviour
         uiController?.SetGoal(goalColor);
 
         GenerateBoard(data);
+        floodAnimator.Init(tiles, rows, cols, colorSprites);
     }
 
     // spawn board from LevelData
@@ -91,15 +95,7 @@ public class BoardManager : MonoBehaviour
         Tile.TileColor originalColor = tiles[r, c].Color;
         if (originalColor == selectedColor) return;
 
-        FloodFill(r, c, originalColor, selectedColor);
-
-        movesLeft--;
-        uiController?.SetMove(movesLeft);
-
-        if (CheckWin())
-            uiController?.UIWin();
-        else if (movesLeft <= 0)
-            uiController?.UILose();
+        StartCoroutine(RunFloodFill(r, c, originalColor, selectedColor));
     }
 
     private void FloodFill(int r, int c, Tile.TileColor targetColor, Tile.TileColor replacementColor)
@@ -116,16 +112,28 @@ public class BoardManager : MonoBehaviour
         FloodFill(r, c - 1, targetColor, replacementColor);
     }
 
-    private bool CheckWin()
+    private IEnumerator RunFloodFill(int r, int c, Tile.TileColor originalColor, Tile.TileColor replacementColor)
     {
-        for (int r = 0; r < rows; r++)
-        {
-            for (int c = 0; c < cols; c++)
-            {
-                if (tiles[r, c].Color != goalColor)
-                    return false;
-            }
-        }
-        return true;
+        yield return StartCoroutine(floodAnimator.AnimateFloodFill(r, c, originalColor, replacementColor));
+
+        movesLeft--;
+        uiController?.SetMove(movesLeft);
+
+        if (CheckWin())
+            uiController?.UIWin();
+        else if (movesLeft <= 0)
+            uiController?.UILose();
     }
+    private bool CheckWin()
+        {
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0; c < cols; c++)
+                {
+                    if (tiles[r, c].Color != goalColor)
+                        return false;
+                }
+            }
+            return true;
+        }
 }

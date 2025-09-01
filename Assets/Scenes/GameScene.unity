@@ -168,6 +168,7 @@ GameObject:
   m_Component:
   - component: {fileID: 191451681}
   - component: {fileID: 191451680}
+  - component: {fileID: 191451682}
   m_Layer: 0
   m_Name: BoardManager
   m_TagString: Untagged
@@ -195,6 +196,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: f8b6789e0e42dce499f0feee367df283, type: 3}
   - {fileID: 21300000, guid: c0f6f16c65c19674ab33bfa619fe2a73, type: 3}
   uiController: {fileID: 1990203009}
+  floodAnimator: {fileID: 191451682}
   currentLevel: {fileID: 11400000, guid: 7e3e0d97220818c4a8ddc92d33dcd1d4, type: 2}
 --- !u!4 &191451681
 Transform:
@@ -211,6 +213,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &191451682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 191451679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91956341adf7d5143a06d7cc6a37b0e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tweenDuration: 0.15
+  layerDelay: 0.05
 --- !u!1 &229698512
 GameObject:
   m_ObjectHideFlags: 0
