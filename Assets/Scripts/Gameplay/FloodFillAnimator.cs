@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
+
 
 public class FloodFillAnimator : MonoBehaviour
 {
@@ -62,6 +64,19 @@ public class FloodFillAnimator : MonoBehaviour
             {
                 tile.Color = replacementColor;
                 StartCoroutine(TweenColor(tile, replacementColor, tweenDuration));
+
+                // -----------------OPTION 2: DOTween----------------------
+                /*
+                tile.Color = replacementColor;
+                SpriteRenderer sr = tile.GetComponent<SpriteRenderer>();
+
+                // set sprite mới trước
+                sr.sprite = colorSprites[(int)replacementColor];
+                sr.color = new Color(1, 1, 1, 0); // start alpha 0
+
+                // dùng DOTween để fade-in
+                sr.DOFade(1f, tweenDuration);
+                */
             }
             // Delay giữa các lớp -> tạo hiệu ứng sóng lan
             yield return new WaitForSeconds(layerDelay);

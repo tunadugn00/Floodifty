@@ -8,6 +8,7 @@ public class BoardManager : MonoBehaviour
     public float cellSize = 1f;
     public GameObject tilePrefab;
     public Sprite[] colorSprites;
+    public HUDController hudController;
     public UIController uiController;
     public FloodFillAnimator floodAnimator;
 
@@ -36,8 +37,8 @@ public class BoardManager : MonoBehaviour
         goalColor = data.targetColor;
         movesLeft = data.movesAllowed;
 
-        uiController?.SetMove(movesLeft);
-        uiController?.SetGoal(goalColor);
+        hudController?.SetMove(movesLeft);
+        hudController?.SetGoal(goalColor);
 
         GenerateBoard(data);
         floodAnimator.Init(tiles, rows, cols, colorSprites);
@@ -75,10 +76,10 @@ public class BoardManager : MonoBehaviour
     public void ResetBoard()
     {
         movesLeft = currentLevel.movesAllowed;
-        uiController?.SetMove(movesLeft);
+        hudController?.SetMove(movesLeft);
 
         goalColor = currentLevel.targetColor;
-        uiController?.SetGoal(goalColor);
+        hudController?.SetGoal(goalColor);
 
         GenerateBoard(currentLevel);
     }
@@ -117,7 +118,7 @@ public class BoardManager : MonoBehaviour
         yield return StartCoroutine(floodAnimator.AnimateFloodFill(r, c, originalColor, replacementColor));
 
         movesLeft--;
-        uiController?.SetMove(movesLeft);
+        hudController?.SetMove(movesLeft);
 
         if (CheckWin())
             uiController?.UIWin();

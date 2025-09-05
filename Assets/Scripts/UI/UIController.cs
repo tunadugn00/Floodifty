@@ -1,41 +1,23 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
-    public TextMeshProUGUI movesText;
-    public TextMeshProUGUI movesValue;
-    public TextMeshProUGUI goalText;
-    public TextMeshProUGUI goalValue;
+
 
     public GameObject winPanel;
     public GameObject losePanel;
     public GameObject pausePanel;
     public BoardManager boardManager;
+    public PopupController popup;
 
-    public void SetMove(int moves)
-    {
-        movesText.text = "Moves Left:";
-        movesValue.text = moves.ToString();
-    }
-    public void SetGoal(Tile.TileColor color)
-    {
-        goalText.text = "Fill Everything With";
-        goalValue.text = color.ToString();
-        goalValue.color = GetColorForTile(color);
-    }
-    private Color GetColorForTile(Tile.TileColor tileColor)
-    {
-        switch(tileColor)
-        {
-            case Tile.TileColor.Red: return Color.red;
-            case Tile.TileColor.Green: return Color.green;
-            case Tile.TileColor.Blue: return Color.blue;
-            case Tile.TileColor.Yellow: return Color.yellow;
-        }
-        return Color.white;
-    }
+    public CanvasGroup levelCompletePanel;
+    public RectTransform levelCompleteWindow;
+    public CanvasGroup levelFailedPanel;
+    public RectTransform levelFailedWindow;
+
+
     public void OnResetButtonClicked()
     {
         boardManager.ResetBoard();
@@ -44,12 +26,14 @@ public class UIController : MonoBehaviour
     public void UIWin()
     {
         GameManager.Instance.SetState(GameManager.GameState.Won);
-        winPanel.SetActive(true);
+        popup.ShowPopup(levelCompletePanel, levelCompleteWindow);
+ 
     }
     public void UILose()
     {
         GameManager.Instance.SetState(GameManager.GameState.Lost);
-        losePanel.SetActive(true);
+        popup.ShowPopup(levelFailedPanel, levelFailedWindow);
+     
     }
     public void UIPause()
     {

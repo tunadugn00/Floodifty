@@ -169,6 +169,7 @@ GameObject:
   - component: {fileID: 191451681}
   - component: {fileID: 191451680}
   - component: {fileID: 191451682}
+  - component: {fileID: 191451683}
   m_Layer: 0
   m_Name: BoardManager
   m_TagString: Untagged
@@ -195,6 +196,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: dd18c1041a1dd644e928edd6966fe631, type: 3}
   - {fileID: 21300000, guid: f8b6789e0e42dce499f0feee367df283, type: 3}
   - {fileID: 21300000, guid: c0f6f16c65c19674ab33bfa619fe2a73, type: 3}
+  hudController: {fileID: 191451683}
   uiController: {fileID: 1990203009}
   floodAnimator: {fileID: 191451682}
   currentLevel: {fileID: 11400000, guid: 7e3e0d97220818c4a8ddc92d33dcd1d4, type: 2}
@@ -227,6 +229,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tweenDuration: 0.15
   layerDelay: 0.05
+--- !u!114 &191451683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 191451679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 459bdfd33f7c9654481fe0561daa1205, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movesText: {fileID: 1089942587}
+  movesValue: {fileID: 490435301}
+  goalText: {fileID: 595276891}
+  goalValue: {fileID: 1292753383}
 --- !u!1 &229698512
 GameObject:
   m_ObjectHideFlags: 0
@@ -372,12 +390,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 255170127}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2075432054}
+  m_Father: {fileID: 584931085}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -434,7 +452,7 @@ GameObject:
   - component: {fileID: 362844549}
   - component: {fileID: 362844548}
   m_Layer: 5
-  m_Name: LevelComplete (1)
+  m_Name: Flag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -452,7 +470,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2075432054}
+  m_Father: {fileID: 584931085}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -523,12 +541,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 371580110}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2075432054}
+  m_Father: {fileID: 584931085}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -761,7 +779,7 @@ GameObject:
   - component: {fileID: 437984784}
   - component: {fileID: 437984783}
   m_Layer: 5
-  m_Name: LevelFailed 1
+  m_Name: Flag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -779,7 +797,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1268082859}
+  m_Father: {fileID: 1565870626}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1205,12 +1223,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 577761366}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1268082859}
+  m_Father: {fileID: 1565870626}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1328,7 +1346,7 @@ GameObject:
   - component: {fileID: 584931087}
   - component: {fileID: 584931086}
   m_Layer: 5
-  m_Name: LevelComplete
+  m_Name: Window
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1345,7 +1363,13 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 362844547}
+  - {fileID: 1137701743}
+  - {fileID: 595533716}
+  - {fileID: 1410093938}
+  - {fileID: 371580111}
+  - {fileID: 255170128}
   m_Father: {fileID: 2075432054}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1425,8 +1449,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -300, y: -400}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: -199.99997, y: -400}
+  m_SizeDelta: {x: 400, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &595276891
 MonoBehaviour:
@@ -1553,12 +1577,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 595533715}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2075432054}
+  m_Father: {fileID: 584931085}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1757,12 +1781,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 624711345}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1268082859}
+  m_Father: {fileID: 1565870626}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1920,12 +1944,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 774044027}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1268082859}
+  m_Father: {fileID: 1565870626}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2678,12 +2702,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1137701742}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2075432054}
+  m_Father: {fileID: 584931085}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2800,6 +2824,7 @@ GameObject:
   - component: {fileID: 1268082859}
   - component: {fileID: 1268082861}
   - component: {fileID: 1268082860}
+  - component: {fileID: 1268082862}
   m_Layer: 5
   m_Name: LevelFailedPanel
   m_TagString: Untagged
@@ -2820,12 +2845,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1565870626}
-  - {fileID: 437984782}
-  - {fileID: 577761367}
-  - {fileID: 1378394063}
-  - {fileID: 624711346}
-  - {fileID: 1903765169}
-  - {fileID: 774044028}
   m_Father: {fileID: 1133449748}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2871,6 +2890,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1268082858}
   m_CullTransparentMesh: 1
+--- !u!225 &1268082862
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268082858}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1292753381
 GameObject:
   m_ObjectHideFlags: 0
@@ -3033,12 +3064,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1378394062}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1268082859}
+  m_Father: {fileID: 1565870626}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3299,12 +3330,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1410093937}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2075432054}
+  m_Father: {fileID: 584931085}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3616,7 +3647,7 @@ GameObject:
   - component: {fileID: 1565870628}
   - component: {fileID: 1565870627}
   m_Layer: 5
-  m_Name: LevelFailed
+  m_Name: Window
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3633,7 +3664,13 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 437984782}
+  - {fileID: 577761367}
+  - {fileID: 1378394063}
+  - {fileID: 624711346}
+  - {fileID: 1903765169}
+  - {fileID: 774044028}
   m_Father: {fileID: 1268082859}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -4318,12 +4355,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1903765168}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1268082859}
+  m_Father: {fileID: 1565870626}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4434,6 +4471,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1990203008}
   - component: {fileID: 1990203009}
+  - component: {fileID: 1990203010}
   m_Layer: 5
   m_Name: UIManager
   m_TagString: Untagged
@@ -4472,14 +4510,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a5b7e5fadce5d42b7b91f634abf9a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movesText: {fileID: 1089942587}
-  movesValue: {fileID: 490435301}
-  goalText: {fileID: 595276891}
-  goalValue: {fileID: 1292753383}
   winPanel: {fileID: 2075432053}
   losePanel: {fileID: 1268082858}
   pausePanel: {fileID: 528210522}
   boardManager: {fileID: 191451680}
+  popup: {fileID: 1990203010}
+  levelCompletePanel: {fileID: 2075432057}
+  levelCompleteWindow: {fileID: 584931085}
+  levelFailedPanel: {fileID: 1268082862}
+  levelFailedWindow: {fileID: 1565870626}
+--- !u!114 &1990203010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990203007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aef80f2accfaa274d9d9d256494b829d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2075432053
 GameObject:
   m_ObjectHideFlags: 0
@@ -4491,6 +4542,7 @@ GameObject:
   - component: {fileID: 2075432054}
   - component: {fileID: 2075432056}
   - component: {fileID: 2075432055}
+  - component: {fileID: 2075432057}
   m_Layer: 5
   m_Name: LevelCompletePanel
   m_TagString: Untagged
@@ -4511,12 +4563,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 584931085}
-  - {fileID: 362844547}
-  - {fileID: 1137701743}
-  - {fileID: 595533716}
-  - {fileID: 1410093938}
-  - {fileID: 371580111}
-  - {fileID: 255170128}
   m_Father: {fileID: 1133449748}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4562,6 +4608,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2075432053}
   m_CullTransparentMesh: 1
+--- !u!225 &2075432057
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2075432053}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2111997683
 GameObject:
   m_ObjectHideFlags: 0
