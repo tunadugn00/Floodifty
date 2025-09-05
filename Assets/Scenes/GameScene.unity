@@ -229,6 +229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tweenDuration: 0.15
   layerDelay: 0.05
+  particlePrefab: {fileID: 3571258290142733949, guid: e3043cb379c8bbc4c85c087f6e4a5a9a, type: 3}
 --- !u!114 &191451683
 MonoBehaviour:
   m_ObjectHideFlags: 0

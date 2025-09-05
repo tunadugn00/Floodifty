@@ -13,6 +13,8 @@ public class FloodFillAnimator : MonoBehaviour
     private Tile[,] tiles;
     private int rows, cols;
 
+    public GameObject particlePrefab;
+
     public void Init(Tile[,] tiles, int rows, int cols, Sprite[] sprites)
     {
         this.tiles = tiles;
@@ -65,6 +67,11 @@ public class FloodFillAnimator : MonoBehaviour
                 tile.Color = replacementColor;
                 StartCoroutine(TweenColor(tile, replacementColor, tweenDuration));
 
+                if (layer == layers[0])
+                {
+                    SpawnParticle(tile, replacementColor);
+                }
+
                 // -----------------OPTION 2: DOTween----------------------
                 /*
                 tile.Color = replacementColor;
@@ -104,5 +111,28 @@ public class FloodFillAnimator : MonoBehaviour
 
         //reset color
         sr.color = Color.white;
+    }
+
+    void SpawnParticle(Tile tile,Tile.TileColor color)
+    {
+        var fx = Instantiate(particlePrefab, tile.transform.position, Quaternion.identity);
+        var ps = fx.GetComponent<ParticleSystem>();
+
+        // đổi màu hạt theo màu tile
+        var main = ps.main;
+        main.startColor = GetColorForTile(color);
+
+        Destroy(fx, 1f);
+    }
+    private Color GetColorForTile(Tile.TileColor tileColor)
+    {
+        switch (tileColor)
+        {
+            case Tile.TileColor.Red: return Color.red;
+            case Tile.TileColor.Green: return Color.green;
+            case Tile.TileColor.Blue: return Color.blue;
+            case Tile.TileColor.Yellow: return Color.yellow;
+        }
+        return Color.white;
     }
 }
