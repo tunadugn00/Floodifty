@@ -82,16 +82,22 @@ public class BoardManager : MonoBehaviour
         hudController?.SetGoal(goalColor);
 
         GenerateBoard(currentLevel);
+
+        // Re-init lại animator với tile mới
+        floodAnimator.Init(tiles, rows, cols, colorSprites);
+
     }
 
     public void OnColorSelected(Tile.TileColor color)
     {
         selectedColor = color;
+        SoundManager.Instance.PlayClick();
     }
 
     public void OnTileClicked(int r, int c)
     {
         if (!GameManager.Instance.IsGameActive()) return;
+        SoundManager.Instance.PlayFillClick();
 
         Tile.TileColor originalColor = tiles[r, c].Color;
         if (originalColor == selectedColor) return;

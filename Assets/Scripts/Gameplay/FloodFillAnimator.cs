@@ -115,6 +115,8 @@ public class FloodFillAnimator : MonoBehaviour
 
     void SpawnParticle(Tile tile,Tile.TileColor color)
     {
+        if (tile == null || tile.gameObject == null) return;
+
         var fx = Instantiate(particlePrefab, tile.transform.position, Quaternion.identity);
         var ps = fx.GetComponent<ParticleSystem>();
 
