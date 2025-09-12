@@ -10,7 +10,7 @@ public class LevelSelectManager : MonoBehaviour
 
     void Start()
     {
-        int unlockedLevel = PlayerPrefs.GetInt("UnlockedLevel", 1);
+        int unlockedLevel = SaveSystem.GetUnlockedLevel();
 
         for (int i = 1; i <= totalLevel ; i++)
         {

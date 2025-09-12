@@ -32,17 +32,31 @@ public class SoundManager : MonoBehaviour
     public void PlayWin() => PlaySFX(winClip);
     public void PlayLose() => PlaySFX(loseClip);
 
-    private void PlaySFX(AudioClip clip)
+    public void PlaySFX(AudioClip clip)
     {
-        if(clip != null && sfxSource != null)
+        if(clip != null && sfxSource != null && SaveSystem.IsSFXEnabled())
         {
             sfxSource.PlayOneShot(clip);
         }
     }
 
-    public void SetVolume (float volume)
+    public void PlayMusic()
     {
-        sfxSource.volume = volume;
-        musicSource.volume = volume;
+        if (musicSource == null) return;
+        if (SaveSystem.IsMusicEnabled())
+        {
+            if (!musicSource.isPlaying)
+            {
+                musicSource.Play();
+            }
+        }
+        else
+        {
+            if (musicSource.isPlaying)
+            {
+                musicSource.Stop();
+            }
+
+        }
     }
 }

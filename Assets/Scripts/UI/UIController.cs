@@ -28,6 +28,9 @@ public class UIController : MonoBehaviour
         GameManager.Instance.SetState(GameManager.GameState.Won);
         popup.ShowPopup(levelCompletePanel, levelCompleteWindow);
         SoundManager.Instance.PlayWin();
+
+        int currentLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
+        SaveSystem.SetUnlockedLevel(currentLevel + 1); // unlock level tiếp theo
  
     }
     public void UILose()
@@ -37,30 +40,36 @@ public class UIController : MonoBehaviour
         SoundManager.Instance.PlayLose();
 
     }
-    public void UIPause()
+    public void PauseButton()
     {
         GameManager.Instance.SetState(GameManager.GameState.Pause);
         pausePanel.SetActive(true);
         SoundManager.Instance.PlayClick();
 
     }
-    public void Resume()
+    public void ResumeButton()
     {
         GameManager.Instance.SetState(GameManager.GameState.Playing);
         pausePanel.SetActive(false);
         SoundManager.Instance.PlayClick();
 
     }
-    public void Restart()
+    public void RestartButton()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         DOTween.KillAll();
         SoundManager.Instance.PlayClick();
     }
 
-    public void MainMenu()
+    public void MainMenuButton()
     {
         SceneManager.LoadScene("MainMenu");
+        SoundManager.Instance.PlayClick();
+    }
+
+    public void LevelMenuButton()
+    {
+        SceneManager.LoadScene("LevelSelect");
         SoundManager.Instance.PlayClick();
     }
 }

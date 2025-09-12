@@ -14,6 +14,7 @@ public class BoardManager : MonoBehaviour
 
     [Header("Level Data")]
     public LevelData currentLevel;
+    public LevelData[] levels;
 
     private Tile[,] tiles;
     private int rows, cols;
@@ -23,10 +24,13 @@ public class BoardManager : MonoBehaviour
 
     void Start()
     {
-        if (currentLevel != null)
+        int selected = PlayerPrefs.GetInt("SelectedLevel", 1);
+        if(selected - 1 >= 0 && selected - 1 < levels.Length)
+        {
+            currentLevel = levels[selected -1];
             LoadLevel(currentLevel);
-        else
-            Debug.LogError("No LevelData assigned!");
+        }
+      
     }
 
     // Load level from LevelData

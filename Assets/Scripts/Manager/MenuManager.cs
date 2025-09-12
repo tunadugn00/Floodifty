@@ -13,4 +13,9 @@ public class MenuManager : MonoBehaviour
     {
         SoundManager.Instance.PlayClick();
     }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }
