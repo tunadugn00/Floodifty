@@ -68,6 +68,7 @@ public class LevelDataEditor : Editor
             case Tile.TileColor.Green: return Color.green;
             case Tile.TileColor.Blue: return Color.blue;
             case Tile.TileColor.Yellow: return Color.yellow;
+            case Tile.TileColor.Rock: return Color.gray;
         }
         return Color.white;
     }

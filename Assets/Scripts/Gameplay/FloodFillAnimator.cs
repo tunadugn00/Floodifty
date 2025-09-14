@@ -37,6 +37,7 @@ public class FloodFillAnimator : MonoBehaviour
         while (queue.Count > 0)
         {
             var (r, c, depth) = queue.Dequeue();
+            if (tiles[r, c].isRock) continue; // không fill rock tile
             if (tiles[r, c].Color != targetColor) continue; // Nếu ô không cùng màu mục tiêu thì bỏ qua
 
             // Gom ô này vào đúng "layer" theo độ sâu BFS
@@ -51,7 +52,7 @@ public class FloodFillAnimator : MonoBehaviour
             {
                 int nr = r + dr[i];
                 int nc = c + dc[i];
-                if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && !visited[nr, nc])
+                if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && !visited[nr, nc] && !tiles[nr,nc].isRock)
                 {
                     visited[nr, nc] = true;
                     queue.Enqueue((nr, nc, depth + 1));

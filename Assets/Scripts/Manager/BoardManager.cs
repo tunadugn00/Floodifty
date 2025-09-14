@@ -8,6 +8,7 @@ public class BoardManager : MonoBehaviour
     public float cellSize = 1f;
     public GameObject tilePrefab;
     public Sprite[] colorSprites;
+    public Sprite rockSprite;
     public HUDController hudController;
     public UIController uiController;
     public FloodFillAnimator floodAnimator;
@@ -71,7 +72,16 @@ public class BoardManager : MonoBehaviour
 
                 var color = data.Get(r, c);
                 tile.Color = color;
-                tileObj.GetComponent<SpriteRenderer>().sprite = colorSprites[(int)color];
+
+                var sr = tileObj.GetComponent<SpriteRenderer>();
+                if (tile.isRock)
+                {
+                    sr.sprite = rockSprite;
+                }
+                else
+                {
+                    sr.sprite = colorSprites[(int)color];
+                }
 
                 tiles[r, c] = tile;
             }
@@ -141,7 +151,7 @@ public class BoardManager : MonoBehaviour
             {
                 for (int c = 0; c < cols; c++)
                 {
-                    if (tiles[r, c].Color != goalColor)
+                    if (tiles[r, c].Color != goalColor && !tiles[r,c].isRock)
                         return false;
                 }
             }
