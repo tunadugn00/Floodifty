@@ -1,13 +1,14 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public static class SaveSystem
 {
     private const string KEY_UNLOCKED_LEVEL = "UnlockedLevel";
+    private const string KEY_LEVEL_STARS_PREFIX = "LevelStars_";
     private const string KEY_VOLUME = "Volume";
     private const string KEY_MUSIC = "MusicEnabled";
     private const string KEY_SFX = "SFXEnabled";
 
-    //=====Level======//
+    //===== Level ======//
     public static int GetUnlockedLevel()
     {
         return PlayerPrefs.GetInt(KEY_UNLOCKED_LEVEL, 1); //unlock level 1
@@ -23,7 +24,23 @@ public static class SaveSystem
         }
     }
 
-    //======Volume======//
+    //====== Star ======//
+    public static void  SetLevelStars (int level , int stars)
+    {
+        int current = GetLevelStars(level);
+        if(stars > current)// lưu nếu * cao hơn
+        {
+            PlayerPrefs.SetInt(KEY_LEVEL_STARS_PREFIX + level, stars);
+            PlayerPrefs.Save();
+        } 
+    }
+    public static int GetLevelStars(int level)
+    {
+        return PlayerPrefs.GetInt(KEY_LEVEL_STARS_PREFIX + level, 0);
+    }
+
+
+    //====== Volume ======//
     public static float GetVolume()
     {
         return PlayerPrefs.GetFloat(KEY_VOLUME, 1.0f); // 100%

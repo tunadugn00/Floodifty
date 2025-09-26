@@ -6,8 +6,7 @@ public class LevelButton : MonoBehaviour
 {
     public TextMeshProUGUI levelText;
     public GameObject lockIcon;
-    public GameObject starIcon;
-
+    public StarDisplay starDisplay;
 
     private int levelIndex;
     private bool unlocked;
@@ -18,6 +17,9 @@ public class LevelButton : MonoBehaviour
         unlocked = isUnlocked;
         levelText.text = (level).ToString();
         lockIcon.SetActive(!unlocked);
+
+        int stars = SaveSystem.GetLevelStars(level);
+        starDisplay.Show(stars);
     }
 
     public void OnClick()

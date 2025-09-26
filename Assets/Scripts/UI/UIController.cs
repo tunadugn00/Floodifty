@@ -10,6 +10,7 @@ public class UIController : MonoBehaviour
     public GameObject pausePanel;
     public BoardManager boardManager;
     public PopupController popup;
+    public StarDisplay starDisplay;
 
     public CanvasGroup levelCompletePanel;
     public RectTransform levelCompleteWindow;
@@ -23,13 +24,17 @@ public class UIController : MonoBehaviour
         SoundManager.Instance.PlayClick();
     }
 
-    public void UIWin()
+    public void UIWin(int stars)
     {
         GameManager.Instance.SetState(GameManager.GameState.Won);
         popup.ShowPopup(levelCompletePanel, levelCompleteWindow);
         SoundManager.Instance.PlayWin();
 
+        starDisplay.Show(stars);
+
         int currentLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
+
+        SaveSystem.SetLevelStars(currentLevel, stars);// lưu *
         SaveSystem.SetUnlockedLevel(currentLevel + 1); // unlock level tiếp theo
  
     }

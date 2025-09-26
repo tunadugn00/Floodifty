@@ -632,7 +632,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   contentParent: {fileID: 493533643}
   levelButtonPrefabs: {fileID: 5641007304660069304, guid: c38248baef1fc874d9e22e272ef630a2, type: 3}
-  totalLevel: 30
+  totalLevel: 100
 --- !u!4 &557350239
 Transform:
   m_ObjectHideFlags: 0

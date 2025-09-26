@@ -140,8 +140,13 @@ public class BoardManager : MonoBehaviour
         movesLeft--;
         hudController?.SetMove(movesLeft);
 
-        if (CheckWin())
-            uiController?.UIWin();
+        if (CheckWin()) { 
+            //tính *
+            int movesUsed = currentLevel.movesAllowed - movesLeft;
+            int stars = StarSystem.CalculateStars(movesUsed, currentLevel.movesAllowed);
+
+            uiController?.UIWin(stars);
+        }
         else if (movesLeft <= 0)
             uiController?.UILose();
     }

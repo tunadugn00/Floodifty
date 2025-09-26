@@ -12,8 +12,6 @@ public class Tile : MonoBehaviour
     public void OnMouseDown()
     {
         if (!GameManager.Instance.IsGameActive()) return;
-
-        Debug.Log($"Tile clicked at {Row},{Col} with color {Color}");
         FindFirstObjectByType<BoardManager>().OnTileClicked(Row, Col);
     }
 }
