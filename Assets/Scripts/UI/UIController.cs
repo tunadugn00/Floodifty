@@ -5,9 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
-    public GameObject winPanel;
-    public GameObject losePanel;
-    public GameObject pausePanel;
     public BoardManager boardManager;
     public PopupController popup;
     public StarDisplay starDisplay;
@@ -16,6 +13,8 @@ public class UIController : MonoBehaviour
     public RectTransform levelCompleteWindow;
     public CanvasGroup levelFailedPanel;
     public RectTransform levelFailedWindow;
+    public CanvasGroup pausedPanel;
+    public RectTransform pausedWindow;
 
 
     public void OnResetButtonClicked()
@@ -48,14 +47,14 @@ public class UIController : MonoBehaviour
     public void PauseButton()
     {
         GameManager.Instance.SetState(GameManager.GameState.Pause);
-        pausePanel.SetActive(true);
+        popup.ShowPopup(pausedPanel, pausedWindow);
         SoundManager.Instance.PlayClick();
 
     }
     public void ResumeButton()
     {
         GameManager.Instance.SetState(GameManager.GameState.Playing);
-        pausePanel.SetActive(false);
+        popup.HidePopup(pausedPanel, pausedWindow);
         SoundManager.Instance.PlayClick();
 
     }

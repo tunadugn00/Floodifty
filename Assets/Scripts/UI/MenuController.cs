@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MenuManager : MonoBehaviour
+public class MenuController : MonoBehaviour
 {
     public PopupController popup;
-    public GameObject settingPanel;
+    public CanvasGroup settingPanel;
+    public RectTransform settingWindow;
  
    public void PlayGameButton()
     {
@@ -19,14 +20,14 @@ public class MenuManager : MonoBehaviour
 
     public void SettingButton()
     {
-        GameManager.Instance.SetState(GameManager.GameState.Pause);
-        settingPanel.SetActive(true);
         SoundManager.Instance.PlayClick();
+        popup.ShowPopup(settingPanel, settingWindow);
+        
     }
     public void CloseButton()
     {
-        settingPanel.SetActive(false);
         SoundManager.Instance.PlayClick();
+        popup.HidePopup(settingPanel, settingWindow);
     }
 
 }

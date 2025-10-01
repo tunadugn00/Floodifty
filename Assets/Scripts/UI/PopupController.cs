@@ -18,19 +18,26 @@ public class PopupController : MonoBehaviour
         panel.blocksRaycasts = true;
         panel.interactable = true;
 
-        // hiệu ứng fade + scale
-        panel.DOFade(1f, 0.3f);
-        content.transform.DOScale(1f, 0.8f).SetEase(Ease.OutBack).OnComplete(()=> content.DOScale(1f, 0.3f));
+        // hiệu ứng fade + scale (chạy bằng unscaled time)
+        panel.DOFade(1f, 0.3f).SetUpdate(true);
+        content.DOScale(1f, 0.8f)
+            .SetEase(Ease.OutBack)
+            .SetUpdate(true)
+            .OnComplete(() => content.DOScale(1f, 0.3f).SetUpdate(true));
     }
 
     public void HidePopup(CanvasGroup panel, RectTransform content)
     {
-        //tắt interactable trong lúc ẩn
+        // tắt interactable trong lúc ẩn
         panel.blocksRaycasts = false;
         panel.interactable = false;
 
-        //fade out + scale nhỏ lại
-        panel.DOFade(0f, 0.2f);
-        content.transform.DOScale(0f, 0.2f).SetEase(Ease.InBack).OnComplete(() => panel.gameObject.SetActive(false));
+        // fade out + scale nhỏ lại (chạy bằng unscaled time)
+        panel.DOFade(0f, 0.2f).SetUpdate(true);
+        content.DOScale(0f, 0.2f)
+            .SetEase(Ease.InBack)
+            .SetUpdate(true)
+            .OnComplete(() => panel.gameObject.SetActive(false));
     }
+
 }
