@@ -13,9 +13,9 @@ public class BoardManager : MonoBehaviour
     public UIController uiController;
     public FloodFillAnimator floodAnimator;
 
-    [Header("Level Data")]
+    [Header("Level Database")]
     public LevelData currentLevel;
-    public LevelData[] levels;
+    public LevelDatabase database;
 
     private Tile[,] tiles;
     private int rows, cols;
@@ -26,11 +26,9 @@ public class BoardManager : MonoBehaviour
     void Start()
     {
         int selected = PlayerPrefs.GetInt("SelectedLevel", 1);
-        if(selected - 1 >= 0 && selected - 1 < levels.Length)
-        {
-            currentLevel = levels[selected -1];
-            LoadLevel(currentLevel);
-        }
+        currentLevel = database.GetLevel(selected);
+        LoadLevel(currentLevel);
+
       
     }
 

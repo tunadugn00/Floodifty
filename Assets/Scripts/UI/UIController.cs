@@ -51,6 +51,23 @@ public class UIController : MonoBehaviour
         SoundManager.Instance.PlayClick();
 
     }
+
+    public void NextLevelButton()
+    {
+        int currentLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
+        int nextLevel = currentLevel + 1;
+
+        if(nextLevel > FindAnyObjectByType<BoardManager>().database.TotalLevels)
+        {
+            SceneManager.LoadScene("LevelSelect");
+        }
+        else
+        {
+            PlayerPrefs.SetInt("SelectedLevel", nextLevel);
+            SceneManager.LoadScene("GameScene");
+        }   
+        SoundManager.Instance.PlayClick();
+    }
     public void ResumeButton()
     {
         GameManager.Instance.SetState(GameManager.GameState.Playing);
