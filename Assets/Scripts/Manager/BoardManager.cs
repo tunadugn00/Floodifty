@@ -99,6 +99,12 @@ public class BoardManager : MonoBehaviour
         floodAnimator.Init(tiles, rows, cols, colorSprites);
 
     }
+    public void AddMove()
+    {
+        movesLeft += 1;
+        hudController?.SetMove(movesLeft);
+    }
+
 
     public void OnColorSelected(Tile.TileColor color)
     {
@@ -148,6 +154,8 @@ public class BoardManager : MonoBehaviour
         else if (movesLeft <= 0)
             uiController?.UILose();
     }
+
+    
     private bool CheckWin()
         {
             for (int r = 0; r < rows; r++)

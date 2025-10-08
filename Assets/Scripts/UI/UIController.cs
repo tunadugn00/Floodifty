@@ -44,6 +44,13 @@ public class UIController : MonoBehaviour
         SoundManager.Instance.PlayLose();
 
     }
+
+    public void AddMoveButton()
+    {
+        boardManager.AddMove();
+        SoundManager.Instance.PlayClick();
+    }
+
     public void PauseButton()
     {
         GameManager.Instance.SetState(GameManager.GameState.Pause);
