@@ -28,7 +28,6 @@ public class UIController : MonoBehaviour
         GameManager.Instance.SetState(GameManager.GameState.Won);
         popup.ShowPopup(levelCompletePanel, levelCompleteWindow);
         SoundManager.Instance.PlayWin();
-
         starDisplay.Show(stars);
 
         int currentLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
@@ -66,12 +65,12 @@ public class UIController : MonoBehaviour
 
         if(nextLevel > FindAnyObjectByType<BoardManager>().database.TotalLevels)
         {
-            SceneManager.LoadScene("LevelSelect");
+            SceneTransitionManager.Instance.LoadSceneWithAni("LevelSelect");
         }
         else
         {
             PlayerPrefs.SetInt("SelectedLevel", nextLevel);
-            SceneManager.LoadScene("GameScene");
+            SceneTransitionManager.Instance.LoadSceneWithAni("GameScene");
         }   
         SoundManager.Instance.PlayClick();
     }
@@ -91,13 +90,13 @@ public class UIController : MonoBehaviour
 
     public void MainMenuButton()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneTransitionManager.Instance.LoadSceneWithAni("MainMenu");
         SoundManager.Instance.PlayClick();
     }
 
     public void LevelMenuButton()
     {
-        SceneManager.LoadScene("LevelSelect");
+        SceneTransitionManager.Instance.LoadSceneWithAni("LevelSelect");
         SoundManager.Instance.PlayClick();
     }
 }

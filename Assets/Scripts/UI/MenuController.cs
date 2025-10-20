@@ -9,12 +9,13 @@ public class MenuController : MonoBehaviour
  
    public void PlayGameButton()
     {
-        SceneManager.LoadScene("LevelSelect");
+        SceneTransitionManager.Instance.LoadSceneWithAni("LevelSelect");
         SoundManager.Instance.PlayClick();
     }
 
     public void EndlessButton()
     {
+        SceneTransitionManager.Instance.LoadSceneWithAni("LevelSelect");
         SoundManager.Instance.PlayClick();
     }
 

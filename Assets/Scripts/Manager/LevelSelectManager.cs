@@ -22,4 +22,10 @@ public class LevelSelectManager : MonoBehaviour
 
         
     }
+
+    public void BackButton()
+    {
+        SoundManager.Instance.PlayClick();
+        SceneTransitionManager.Instance.LoadSceneWithAni("MainMenu");
+    }
 }

@@ -27,6 +27,7 @@ public class LevelButton : MonoBehaviour
         if (!unlocked) return;
 
         PlayerPrefs.SetInt("SelectedLevel", levelIndex);
-        UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
+        SoundManager.Instance.PlayClick();
+        SceneTransitionManager.Instance.LoadSceneWithAni("GameScene");
     }
 }
