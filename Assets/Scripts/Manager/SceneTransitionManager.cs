@@ -28,8 +28,6 @@ public class SceneTransitionManager : MonoBehaviour
 
     private IEnumerator DoSceneTransition(string sceneName)
     {
-        // Lấy chiều rộng của màn hình
-        float panelWidth = (transitionMask.transform as RectTransform).rect.width;
         CanvasGroup maskGroup = transitionMask.GetComponent<CanvasGroup>();
         if(maskGroup ==  null)
         {
@@ -38,14 +36,10 @@ public class SceneTransitionManager : MonoBehaviour
         //Transition IN
         transitionMask.gameObject.SetActive(true);
         maskGroup.alpha = 0f;
-        transitionMask.anchoredPosition = new Vector2(-panelWidth, 0);
 
+        yield return maskGroup.DOFade(1, swipeDuration).SetEase(Ease.InOutSine).WaitForCompletion();
 
-        Sequence inSeq = DOTween.Sequence();
-        inSeq.Join(transitionMask.DOAnchorPosX(0, swipeDuration).SetEase(Ease.OutCubic));
-        inSeq.Join(maskGroup.DOFade(1, swipeDuration * 0.6f).SetEase(Ease.Linear));
-        yield return inSeq.WaitForCompletion();
-
+        //Loading... text
         if (loadingText != null)
         {
             loadingText.gameObject.SetActive(true);
@@ -55,7 +49,6 @@ public class SceneTransitionManager : MonoBehaviour
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         asyncLoad.allowSceneActivation = false;
 
-        //Loading... text
         float timer = 0f;
         float minimumLoadTime = 1.5f;
 
@@ -74,10 +67,7 @@ public class SceneTransitionManager : MonoBehaviour
         yield return new WaitUntil(() => asyncLoad.isDone);
 
         //Transition OUT
-        Sequence outSeq = DOTween.Sequence();
-        outSeq.Join(transitionMask.DOAnchorPosX(panelWidth, swipeDuration).SetEase(Ease.InOutSine));
-        outSeq.Join(maskGroup.DOFade(0, swipeDuration * 0.8f).SetEase(Ease.InOutSine));
-        yield return outSeq.WaitForCompletion();
+        yield return maskGroup.DOFade(0, swipeDuration).SetEase(Ease.InOutSine).WaitForCompletion();
 
         if (loadingText != null)
         {
