@@ -21,6 +21,7 @@ public class BoardManager : MonoBehaviour
     private int rows, cols;
     private Tile.TileColor goalColor;
     private int movesLeft;
+    private int actualMovesUsed;
     private Tile.TileColor selectedColor;
 
     void Start()
@@ -39,6 +40,7 @@ public class BoardManager : MonoBehaviour
         cols = data.cols;
         goalColor = data.targetColor;
         movesLeft = data.movesAllowed;
+        actualMovesUsed = 0;
 
         hudController?.SetMove(movesLeft);
         hudController?.SetGoal(goalColor);
@@ -88,6 +90,7 @@ public class BoardManager : MonoBehaviour
     public void ResetBoard()
     {
         movesLeft = currentLevel.movesAllowed;
+        actualMovesUsed = 0;
         hudController?.SetMove(movesLeft);
 
         goalColor = currentLevel.targetColor;
@@ -142,13 +145,12 @@ public class BoardManager : MonoBehaviour
         yield return StartCoroutine(floodAnimator.AnimateFloodFill(r, c, originalColor, replacementColor));
 
         movesLeft--;
+        actualMovesUsed++;
         hudController?.SetMove(movesLeft);
 
-        if (CheckWin()) { 
+        if (CheckWin()) {
             //tính *
-            int movesUsed = currentLevel.movesAllowed - movesLeft;
-            int stars = StarSystem.CalculateStars(movesUsed, currentLevel.movesAllowed);
-
+            int stars = StarSystem.CalculateStars(actualMovesUsed, currentLevel.movesAllowed);
             uiController?.UIWin(stars);
         }
         else if (movesLeft <= 0)

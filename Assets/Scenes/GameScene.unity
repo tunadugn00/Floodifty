@@ -605,6 +605,9 @@ MonoBehaviour:
   - {fileID: 803212866}
   - {fileID: 1585546311}
   - {fileID: 1838743037}
+  starScaleDuration: 0.5
+  delayBetweenStars: 0.2
+  starEaseType: 27
 --- !u!1 &362844546
 GameObject:
   m_ObjectHideFlags: 0
