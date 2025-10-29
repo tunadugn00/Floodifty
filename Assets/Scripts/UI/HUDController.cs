@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using DG.Tweening;
 
 public class HUDController : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class HUDController : MonoBehaviour
     {
         movesText.text = "Moves Left:";
         movesValue.text = moves.ToString();
+
+        movesValue.transform.DOPunchScale(new Vector3(0.5f, 0.5f, 0.5f), 0.3f, 1, 0.5f);
     }
     public void SetGoal(Tile.TileColor color)
     {

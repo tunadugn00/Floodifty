@@ -142,11 +142,11 @@ public class BoardManager : MonoBehaviour
 
     private IEnumerator RunFloodFill(int r, int c, Tile.TileColor originalColor, Tile.TileColor replacementColor)
     {
-        yield return StartCoroutine(floodAnimator.AnimateFloodFill(r, c, originalColor, replacementColor));
-
         movesLeft--;
         actualMovesUsed++;
         hudController?.SetMove(movesLeft);
+
+        yield return StartCoroutine(floodAnimator.AnimateFloodFill(r, c, originalColor, replacementColor));
 
         if (CheckWin()) {
             //tính *
