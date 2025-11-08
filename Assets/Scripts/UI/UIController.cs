@@ -16,6 +16,17 @@ public class UIController : MonoBehaviour
     public CanvasGroup pausedPanel;
     public RectTransform pausedWindow;
 
+    // ADS : đăng kí sự kiên trả thưởng
+    private void  OnEnable()
+    {
+        //khi AdsManager gọi trả thưởng, gọi hàm GiveReward
+        AdsManager.OnUserEarnedReward += GiveReward;
+    }
+    private void OnDisable()
+    {
+        //hủy đăng kí khi tắt object
+        AdsManager.OnUserEarnedReward -= GiveReward;
+    }
 
     public void OnResetButtonClicked()
     {
@@ -35,6 +46,11 @@ public class UIController : MonoBehaviour
         SaveSystem.SetLevelStars(currentLevel, stars);// lưu *
         SaveSystem.SetUnlockedLevel(currentLevel + 1); // unlock level tiếp theo
  
+        //hiển thị ADS xen kẽ, 50% tỉ lệ
+        if(Random.Range(0,2) == 0)
+        {
+            AdsManager.Instance.ShowInterstitialAd();
+        }
     }
     public void UILose()
     {
@@ -46,8 +62,14 @@ public class UIController : MonoBehaviour
 
     public void AddMoveButton()
     {
-        boardManager.AddMove();
+        //Hiển thị ADS có thưởng
+        AdsManager.Instance.ShowRewardedAd();
         SoundManager.Instance.PlayClick();
+    }
+    //gọi tự động bới ADsManager khi xem QC thành công
+    private void GiveReward()
+    {
+        boardManager.AddMove();
     }
 
     public void PauseButton()
