@@ -17,7 +17,7 @@ public class LevelSelectManager : MonoBehaviour
             var buttonObj = Instantiate(levelButtonPrefabs, contentParent);
             var btn = buttonObj.GetComponent<LevelButton>();
             bool unlocked = i <= unlockedLevel;
-            btn.Setup(i, unlocked);
+            
         }
 
         
