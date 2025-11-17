@@ -29,8 +29,8 @@ public class LevelButton : MonoBehaviour
         _isInteractable = !isLocked;
 
         //Set level button
-        levelCompleted.SetActive(!isLocked);
-        levelUnCompleted.SetActive(isLocked);
+        levelCompleted.SetActive(isBeaten);
+        levelUnCompleted.SetActive(!isBeaten);
 
         //Highlight
         highlightEffect.SetActive(isNextPlayable);
@@ -55,6 +55,23 @@ public class LevelButton : MonoBehaviour
         }
 
         GetComponent<Button>().interactable = _isInteractable;
+    }
+
+    public void SetupComingSoon()
+    {
+        _isInteractable = false;
+
+        levelText.gameObject.SetActive(false);
+        levelCompleted.SetActive(false);
+        levelUnCompleted.SetActive(true);
+        highlightEffect.SetActive(false);
+        filledStars.SetActive(false);
+        emptyStars.SetActive(false);
+        if(lineOn != null)
+        {
+            lineOn.SetActive(false);
+        }
+        GetComponent<Button>().interactable = false;
     }
 
     public void OnLevelSelected()
