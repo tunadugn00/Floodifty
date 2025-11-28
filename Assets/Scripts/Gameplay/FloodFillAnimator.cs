@@ -138,4 +138,55 @@ public class FloodFillAnimator : MonoBehaviour
         }
         return Color.white;
     }
+
+    public IEnumerator AnimateBoardSpawn()
+    {
+        int starR = rows / 2;
+        int starC = cols / 2;
+
+        Queue<(int r, int c, int depth)> queue = new Queue<(int, int, int)>();
+        bool[,] visited = new bool[ rows, cols ];
+        List<List<Tile>> layers = new List<List<Tile>>();
+
+        queue.Enqueue((starR, starC, 0));
+        visited[starR, starC] = true;
+
+        while (queue.Count > 0)
+        {
+            var (r, c, depth) = queue.Dequeue();
+
+            //gom layer
+            if(layers.Count <= depth) layers.Add(new List<Tile>());
+            layers[depth].Add(tiles[r, c]);
+
+            //Duyệt 4 hướng
+            int[] dr = { 1, -1, 0, 0};
+            int[] dc = { 0, 0, 1, -1 };
+
+            for(int i = 0; i < 4; i++)
+            {
+                int nr = r + dr[i];
+                int nc = c + dc[i];
+
+                //BFS
+                if(nr >= 0 && nr < rows && nc >= 0 && nc < cols && !visited[nr, nc])
+                {
+                    visited[nr, nc] = true;
+                    queue.Enqueue((nr, nc, depth + 1));
+                }
+            }
+        }
+
+        foreach (var layer in layers)
+        {
+            foreach ( var tile in layer)
+            {
+                tile.GetComponent<SpriteRenderer>().color = Color.white;
+                tile.transform.localScale = Vector3.zero;
+                tile.transform.DOScale(Vector3.one * 0.82f, tweenDuration).SetEase(Ease.OutBack);
+
+            }
+            yield return new WaitForSeconds(layerDelay);
+        }
+    }
 }

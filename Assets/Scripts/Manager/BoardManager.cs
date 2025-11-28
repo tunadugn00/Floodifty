@@ -47,6 +47,8 @@ public class BoardManager : MonoBehaviour
 
         GenerateBoard(data);
         floodAnimator.Init(tiles, rows, cols, colorSprites);
+
+        StartCoroutine(floodAnimator.AnimateBoardSpawn());
     }
 
     // spawn board from LevelData
@@ -65,7 +67,8 @@ public class BoardManager : MonoBehaviour
             {
                 GameObject tileObj = Instantiate(tilePrefab, transform);
                 tileObj.transform.localPosition = new Vector3(c * cellSize + offsetX, r * cellSize + offsetY, 0);
-
+                tileObj.transform.localScale = Vector3.zero;
+                
                 Tile tile = tileObj.GetComponent<Tile>();
                 tile.Row = r;
                 tile.Col = c;
@@ -101,6 +104,7 @@ public class BoardManager : MonoBehaviour
         // Re-init lại animator với tile mới
         floodAnimator.Init(tiles, rows, cols, colorSprites);
 
+        StartCoroutine(floodAnimator.AnimateBoardSpawn());
     }
     public void AddMove()
     {
