@@ -1825,7 +1825,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &528210523
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4654,9 +4654,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1990203011}
         m_TargetAssemblyTypeName: SettingsController, Assembly-CSharp
-        m_MethodName: ToggleSFX
+        m_MethodName: ToggleVibration
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5555,7 +5555,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 676351875, guid: 90dd00a46dcd5a649ba79bde6b14ae35, type: 3}
+  m_Sprite: {fileID: -1733504489, guid: 90dd00a46dcd5a649ba79bde6b14ae35, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6107,7 +6107,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1711837462}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1990203009}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: RestartButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1711837462
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7335,11 +7347,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicHandle: {fileID: 2110921276}
   sfxHandle: {fileID: 1631945100}
+  vibrationHandle: {fileID: 114646896}
   musicHandleImage: {fileID: 2110921274}
   sfxHandleImage: {fileID: 1631945098}
+  vibrationHandleImage: {fileID: 114646897}
   moveDuration: 0.2
-  handleOnX: 35
-  handleOffX: -35
+  handleOnX: 60
+  handleOffX: -60
   onColor: {r: 0, g: 1, b: 0, a: 1}
   offColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &2009350752
@@ -7904,7 +7918,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2111997686}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1990203009}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: MainMenuButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2111997686
 MonoBehaviour:
   m_ObjectHideFlags: 0

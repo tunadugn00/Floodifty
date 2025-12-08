@@ -7,6 +7,7 @@ public static class SaveSystem
     private const string KEY_VOLUME = "Volume";
     private const string KEY_MUSIC = "MusicEnabled";
     private const string KEY_SFX = "SFXEnabled";
+    private const string KEY_VIB = "VibrationEnabled";
 
     //===== Level ======//
     public static int GetUnlockedLevel()
@@ -69,5 +70,15 @@ public static class SaveSystem
     {
         PlayerPrefs.SetInt(KEY_SFX, enabled ? 1 : 0);
         PlayerPrefs.Save();
+    }
+
+    public static void SetVibrationEnabled (bool enabled)
+    {
+        PlayerPrefs.SetInt(KEY_VIB, enabled ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+    public static bool IsVibrationEnabled()
+    {
+        return PlayerPrefs.GetInt(KEY_VIB, 1) == 1;
     }
 }

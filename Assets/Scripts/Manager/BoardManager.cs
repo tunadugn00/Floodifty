@@ -122,11 +122,16 @@ public class BoardManager : MonoBehaviour
     public void OnTileClicked(int r, int c)
     {
         if (!GameManager.Instance.IsGameActive()) return;
-        SoundManager.Instance.PlayFillClick();
 
         Tile.TileColor originalColor = tiles[r, c].Color;
-        if (originalColor == selectedColor) return;
+        if (originalColor == selectedColor)
+        {
+            SoundManager.VibrateIfEnabled();
+            SoundManager.Instance.PlayClick();
+            return;
+        }
 
+        SoundManager.Instance.PlayFillClick();
         StartCoroutine(RunFloodFill(r, c, originalColor, selectedColor));
     }
 

@@ -6,9 +6,11 @@ public class SettingsController : MonoBehaviour
 {
     [SerializeField] private RectTransform musicHandle;
     [SerializeField] private RectTransform sfxHandle;
+    [SerializeField] private RectTransform vibrationHandle;
 
     [SerializeField] private Image musicHandleImage;
     [SerializeField] private Image sfxHandleImage;
+    [SerializeField] private Image vibrationHandleImage;
 
     [SerializeField] private float moveDuration = 0.2f; 
     [SerializeField] private float handleOnX = 35f; 
@@ -38,39 +40,43 @@ public class SettingsController : MonoBehaviour
         UpdateVisuals(true);
         SoundManager.Instance.PlayClick();
     }
+    public void ToggleVibration()
+    {
+        bool enabled = !SaveSystem.IsVibrationEnabled();
+        SaveSystem.SetVibrationEnabled(enabled);
+
+        if (enabled) SoundManager.VibrateIfEnabled();
+        UpdateVisuals(true);
+        SoundManager.Instance.PlayClick();
+    }
+
     private void UpdateVisuals(bool animate)
     {
-        // --- Music ---
-        bool musicOn = SaveSystem.IsMusicEnabled();
-        float targetMusicX = musicOn ? handleOnX : handleOffX;
-        Color targetMusicColor = musicOn ? onColor : offColor;
+        // 1. Music
+        UpdateSingleToggle(musicHandle, musicHandleImage, SaveSystem.IsMusicEnabled(), animate);
+        // 2. SFX
+        UpdateSingleToggle(sfxHandle, sfxHandleImage, SaveSystem.IsSFXEnabled(), animate);
+        // 3. Vibration
+        UpdateSingleToggle(vibrationHandle, vibrationHandleImage, SaveSystem.IsVibrationEnabled(), animate);
+    }
+
+    private void UpdateSingleToggle(RectTransform handle, Image handleImg, bool isOn, bool animate)
+    {
+        if (handle == null) return;
+
+        DOTween.Kill(handle);
+        float targetX = isOn ? handleOnX : handleOffX;
+        Color targetColor = isOn ? onColor : offColor;
 
         if (animate)
         {
-            musicHandle.DOAnchorPosX(targetMusicX, moveDuration).SetEase(Ease.OutBack);
-            // Hiệu ứng đổi màu 
-            if (musicHandleImage) musicHandleImage.DOColor(targetMusicColor, moveDuration);
+            handle.DOAnchorPosX(targetX, moveDuration).SetEase(Ease.OutBack);
+            if (handleImg) handleImg.DOColor(targetColor, moveDuration);
         }
         else
         {
-            musicHandle.anchoredPosition = new Vector2(targetMusicX, musicHandle.anchoredPosition.y);
-            if (musicHandleImage) musicHandleImage.color = targetMusicColor;
-        }
-
-        // --- SFX ---
-        bool sfxOn = SaveSystem.IsSFXEnabled();
-        float targetSfxX = sfxOn ? handleOnX : handleOffX;
-        Color targetSfxColor = sfxOn ? onColor : offColor;
-
-        if (animate)
-        {
-            sfxHandle.DOAnchorPosX(targetSfxX, moveDuration).SetEase(Ease.OutBack);
-            if (sfxHandleImage) sfxHandleImage.DOColor(targetSfxColor, moveDuration);
-        }
-        else
-        {
-            sfxHandle.anchoredPosition = new Vector2(targetSfxX, sfxHandle.anchoredPosition.y);
-            if (sfxHandleImage) sfxHandleImage.color = targetSfxColor;
+            handle.anchoredPosition = new Vector2(targetX, handle.anchoredPosition.y);
+            if (handleImg) handleImg.color = targetColor;
         }
     }
 }

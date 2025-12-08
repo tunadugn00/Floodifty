@@ -194,8 +194,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicHandle: {fileID: 698056120}
   sfxHandle: {fileID: 1119043971}
+  vibrationHandle: {fileID: 454020112}
   musicHandleImage: {fileID: 698056121}
   sfxHandleImage: {fileID: 1119043972}
+  vibrationHandleImage: {fileID: 454020113}
   moveDuration: 0.2
   handleOnX: 60
   handleOffX: -60
@@ -3142,7 +3144,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1594762}
         m_TargetAssemblyTypeName: SettingsController, Assembly-CSharp
-        m_MethodName: ToggleSFX
+        m_MethodName: ToggleVibration
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -59,4 +59,12 @@ public class SoundManager : MonoBehaviour
 
         }
     }
+
+    public static void VibrateIfEnabled()
+    {
+        if (SaveSystem.IsVibrationEnabled())
+        {
+            Handheld.Vibrate();
+        }
+    }
 }
