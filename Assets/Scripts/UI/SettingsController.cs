@@ -70,8 +70,8 @@ public class SettingsController : MonoBehaviour
 
         if (animate)
         {
-            handle.DOAnchorPosX(targetX, moveDuration).SetEase(Ease.OutBack);
-            if (handleImg) handleImg.DOColor(targetColor, moveDuration);
+            handle.DOAnchorPosX(targetX, moveDuration).SetEase(Ease.OutBack).SetUpdate(true); ;
+            if (handleImg) handleImg.DOColor(targetColor, moveDuration).SetUpdate(true); ;
         }
         else
         {

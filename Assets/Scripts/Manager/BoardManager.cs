@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,6 +24,7 @@ public class BoardManager : MonoBehaviour
     private int movesLeft;
     private int actualMovesUsed;
     private Tile.TileColor selectedColor;
+    public ColorButton[] colorButtons;
 
     void Start()
     {
@@ -117,6 +119,14 @@ public class BoardManager : MonoBehaviour
     {
         selectedColor = color;
         SoundManager.Instance.PlayClick();
+
+        foreach(var btn in colorButtons)
+        {
+            if(btn != null)
+            {
+                btn.UpdateVisualState(color);
+            }
+        }
     }
 
     public void OnTileClicked(int r, int c)
