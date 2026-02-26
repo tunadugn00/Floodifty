@@ -105,6 +105,8 @@ public class UIController : MonoBehaviour
     }
     public void RestartButton()
     {
+        Time.timeScale = 1f;
+        GameManager.Instance.SetState(GameManager.GameState.Playing);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         DOTween.KillAll();
         SoundManager.Instance.PlayClick();
@@ -112,12 +114,17 @@ public class UIController : MonoBehaviour
 
     public void MainMenuButton()
     {
+        Time.timeScale = 1f;
+        GameManager.Instance.SetState(GameManager.GameState.Playing);
         SceneTransitionManager.Instance.LoadSceneWithAni("MainMenu");
         SoundManager.Instance.PlayClick();
     }
 
     public void LevelMenuButton()
     {
+        Time.timeScale = 1f;
+        GameManager.Instance.SetState(GameManager.GameState.Playing);
+
         SceneTransitionManager.Instance.LoadSceneWithAni("LevelSelect");
         SoundManager.Instance.PlayClick();
     }

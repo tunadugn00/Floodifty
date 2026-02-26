@@ -189,4 +189,8 @@ public class BoardManager : MonoBehaviour
             }
             return true;
         }
+    public Tile[,] GetTiles()
+    {
+        return tiles;
+    }
 }

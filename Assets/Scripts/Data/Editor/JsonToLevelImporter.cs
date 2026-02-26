@@ -21,7 +21,6 @@ public class JsonToSOImporter
             string json = File.ReadAllText(path);
             Debug.Log("📄 JSON content preview: " + json.Substring(0, Mathf.Min(200, json.Length)) + "...");
 
-            // Sử dụng Newtonsoft.Json thay vì JsonUtility
             var levels = ParseJsonManually(json);
 
             if (levels == null || levels.Count == 0)
@@ -33,9 +32,38 @@ public class JsonToSOImporter
             string savePath = "Assets/Levels";
             if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
 
-            // Tìm số level hiện có
+            // Tìm tất cả số level hiện có
             string[] existing = Directory.GetFiles(savePath, "Level_*.asset");
-            int startIndex = existing.Length + 1;
+            var existingNumbers = new HashSet<int>();
+
+            foreach (var file in existing)
+            {
+                var filename = System.IO.Path.GetFileNameWithoutExtension(file);
+                if (filename.StartsWith("Level_"))
+                {
+                    string numberPart = filename.Substring(6);
+                    if (int.TryParse(numberPart, out int num))
+                    {
+                        existingNumbers.Add(num);
+                    }
+                }
+            }
+
+            Debug.Log($"📊 Đã có {existingNumbers.Count} levels: {string.Join(", ", existingNumbers.OrderBy(x => x))}");
+
+            // Tìm các số trống để lấp vào
+            var availableSlots = new List<int>();
+            int maxLevel = existingNumbers.Count > 0 ? existingNumbers.Max() : 0;
+
+            for (int i = 1; i <= maxLevel; i++)
+            {
+                if (!existingNumbers.Contains(i))
+                {
+                    availableSlots.Add(i);
+                }
+            }
+
+            Debug.Log($"🔍 Tìm thấy {availableSlots.Count} khoảng trống: {string.Join(", ", availableSlots)}");
 
             for (int i = 0; i < levels.Count; i++)
             {
@@ -47,13 +75,28 @@ public class JsonToSOImporter
                 so.targetColor = ParseColor(src.targetColor);
                 so.layout = Flatten(src.layout, so.rows, so.cols);
 
-                string assetName = $"Level_{startIndex + i}.asset";
+                int levelNumber;
+
+                if (availableSlots.Count > 0)
+                {
+                    levelNumber = availableSlots[0];
+                    availableSlots.RemoveAt(0);
+                    Debug.Log($"📝 Lấp khoảng trống: Level_{levelNumber}");
+                }
+                else
+                {
+                    levelNumber = maxLevel + 1;
+                    maxLevel++;
+                    Debug.Log($"➕ Chèn tiếp: Level_{levelNumber}");
+                }
+
+                string assetName = $"Level_{levelNumber}.asset";
                 AssetDatabase.CreateAsset(so, Path.Combine(savePath, assetName));
             }
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log($"✅ Imported {levels.Count} levels, starting from Level_{startIndex}");
+            
         }
         catch (System.Exception ex)
         {
@@ -61,12 +104,10 @@ public class JsonToSOImporter
         }
     }
 
-    // Parse JSON manually vì JsonUtility không support jagged arrays
     static List<LevelDataJson> ParseJsonManually(string json)
     {
         try
         {
-            // Remove whitespace và newlines
             json = json.Trim();
 
             if (!json.StartsWith("[") || !json.EndsWith("]"))
@@ -76,13 +117,11 @@ public class JsonToSOImporter
             }
 
             var levels = new List<LevelDataJson>();
-
-            // Tìm các object level
-            int startIndex = 1; // Skip opening [
+            int startIndex = 1;
             int braceCount = 0;
             int objectStart = -1;
 
-            for (int i = startIndex; i < json.Length - 1; i++) // Skip closing ]
+            for (int i = startIndex; i < json.Length - 1; i++)
             {
                 char c = json[i];
 
@@ -120,16 +159,11 @@ public class JsonToSOImporter
         try
         {
             var level = new LevelDataJson();
-
-            // Parse basic fields
             level.rows = ExtractIntValue(objectJson, "rows");
             level.cols = ExtractIntValue(objectJson, "cols");
             level.movesAllowed = ExtractIntValue(objectJson, "movesAllowed");
             level.targetColor = ExtractStringValue(objectJson, "targetColor");
-
-            // Parse layout array
             level.layout = ParseLayout(objectJson);
-
             return level;
         }
         catch (System.Exception ex)
@@ -155,7 +189,6 @@ public class JsonToSOImporter
 
     static string[][] ParseLayout(string json)
     {
-        // Tìm "layout": [...]
         int layoutStart = json.IndexOf("\"layout\":");
         if (layoutStart == -1) return null;
 
@@ -167,7 +200,6 @@ public class JsonToSOImporter
 
         string layoutJson = json.Substring(arrayStart + 1, arrayEnd - arrayStart - 1);
 
-        // Parse rows
         var rows = new List<string[]>();
         int rowStart = 0;
 
@@ -231,15 +263,17 @@ public class JsonToSOImporter
         };
     }
 
+    // ===== SỬA: ĐẢO NGƯỢC ROW KHI FLATTEN =====
     static Tile.TileColor[] Flatten(string[][] arr, int rows, int cols)
     {
         if (arr == null)
         {
             Debug.LogError("Layout array is null!");
-            return new Tile.TileColor[rows * cols]; // Return default array
+            return new Tile.TileColor[rows * cols];
         }
 
         var flat = new Tile.TileColor[rows * cols];
+
         for (int r = 0; r < rows && r < arr.Length; r++)
         {
             if (arr[r] == null)
@@ -248,11 +282,16 @@ public class JsonToSOImporter
                 continue;
             }
 
+            // ĐẢO NGƯỢC: JSON row 0 (top) → Unity row (rows-1) (bottom)
+            int unityRow = rows - 1 - r;
+
             for (int c = 0; c < cols && c < arr[r].Length; c++)
             {
-                flat[r * cols + c] = ParseColor(arr[r][c]);
+                flat[unityRow * cols + c] = ParseColor(arr[r][c]);
             }
         }
+
+        Debug.Log($"✅ Flattened với flip vertical: JSON row 0 → Unity row {rows - 1}");
         return flat;
     }
 
