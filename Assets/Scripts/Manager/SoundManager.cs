@@ -13,6 +13,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip fillClip;
     public AudioClip winClip;
     public AudioClip loseClip;
+    public AudioClip coinClip;
 
     private void Awake()
     {
@@ -31,6 +32,8 @@ public class SoundManager : MonoBehaviour
     public void PlayFillClick() => PlaySFX(fillClip);
     public void PlayWin() => PlaySFX(winClip);
     public void PlayLose() => PlaySFX(loseClip);
+    public void PlayCoin() => PlaySFX(coinClip);
+
 
     public void PlaySFX(AudioClip clip)
     {

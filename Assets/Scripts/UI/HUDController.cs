@@ -18,7 +18,7 @@ public class HUDController : MonoBehaviour
     }
     public void SetGoal(Tile.TileColor color)
     {
-        goalText.text = "Fill Everything With";
+        goalText.text = "Target:";
         goalValue.text = color.ToString();
         goalValue.color = GetColorForTile(color);
     }
