@@ -85,6 +85,7 @@ public class CurrencyManager : MonoBehaviour
     {
         AddCoins(1000);
     }
+    [ContextMenu("Del 1000 Coins (Cheat)")]
     private void CheatDelCoins()
     {
         AddCoins(-1000);

@@ -9,6 +9,33 @@ public class HUDController : MonoBehaviour
     public TextMeshProUGUI goalText;
     public TextMeshProUGUI goalValue;
 
+    [Header("ITEM")]
+    public TextMeshProUGUI hintCountText;
+    public TextMeshProUGUI hammerCountText;
+    public TextMeshProUGUI bombCountText;
+    private void Start()
+    {
+        UpdateItemCounts();
+    }
+    public void UpdateItemCounts()
+    {
+        if (ItemManager.Instance == null) return;
+        if (hintCountText != null)
+        {
+            int count = ItemManager.Instance.GetHintCount();
+            hintCountText.text = count > 0 ? count.ToString() : "+";
+        }
+        if (hammerCountText != null)
+        {
+            int count = ItemManager.Instance.GetHammerCount();
+            hammerCountText.text = count > 0 ? count.ToString() : "+";
+        }
+        if (bombCountText != null)
+        {
+            int count = ItemManager.Instance.GetColorBombCount();
+            bombCountText.text = count > 0 ? count.ToString() : "+";
+        }
+    }
     public void SetMove(int moves)
     {
         movesText.text = "Moves Left:";

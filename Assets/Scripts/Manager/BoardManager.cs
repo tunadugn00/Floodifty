@@ -170,6 +170,8 @@ public class BoardManager : MonoBehaviour
         if (CheckWin()) {
             //tính *
             int stars = StarSystem.CalculateStars(actualMovesUsed, currentLevel.movesAllowed);
+            //coin
+            int coinsEarned = RewardManager.Instance.GiveReward(stars);
             uiController?.UIWin(stars);
         }
         else if (movesLeft <= 0)

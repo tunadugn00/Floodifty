@@ -5,12 +5,35 @@ using DG.Tweening;
 public class HintManager : MonoBehaviour
 {
     public BoardManager boardManager;
+    public HUDController hudController;
+    public GameObject shopPanel;
     private bool isHinting = false;
 
     public void OnHintButtonClicked()
     {
         if (isHinting) return;
-        StartCoroutine(ShowHintRoutine());
+
+        if (!ItemManager.Instance.HasHint())
+        {
+            OpenShop();
+            SoundManager.Instance?.PlayClick();
+            return;
+        }
+        bool success = ItemManager.Instance.UseHint();
+
+        if (success)
+        {
+            hudController?.UpdateItemCounts();
+            StartCoroutine(ShowHintRoutine());
+        }
+    }
+
+    private void OpenShop()
+    {
+        if(shopPanel != null)
+        {
+            shopPanel.SetActive(true);
+        }
     }
 
     private IEnumerator ShowHintRoutine()
@@ -22,7 +45,6 @@ public class HintManager : MonoBehaviour
         int cols = tiles.GetLength(1);
         Tile.TileColor targetColor = boardManager.currentLevel.targetColor;
 
-        // ===== SỬ DỤNG MCTS HINT =====
         var (hintRow, hintCol, hintColor) = MCTSHintSolver.GetHint(tiles, rows, cols, targetColor);
 
         if (hintRow < 0 || hintCol < 0)
@@ -34,7 +56,6 @@ public class HintManager : MonoBehaviour
 
         Debug.Log($"[Hint] Gợi ý: Click ô ({hintRow}, {hintCol}) màu {tiles[hintRow, hintCol].Color} → Fill sang {hintColor}");
 
-        // ===== HIỆU ỨNG: NHẤP NHẤY Ô GỢI Ý =====
         Tile hintTile = tiles[hintRow, hintCol];
         SpriteRenderer sr = hintTile.GetComponent<SpriteRenderer>();
 
@@ -43,7 +64,6 @@ public class HintManager : MonoBehaviour
             Sprite originalSprite = sr.sprite;
             Sprite targetSprite = boardManager.colorSprites[(int)hintColor];
 
-            // Nháy 3 lần
             for (int i = 0; i < 3; i++)
             {
                 hintTile.transform.DOScale(hintTile.transform.localScale * 1.2f, 0.2f);
@@ -56,7 +76,6 @@ public class HintManager : MonoBehaviour
             }
         }
 
-        // ===== NHÁY NÚT MÀU GỢI Ý =====
         HighlightUIButton(hintColor);
 
         isHinting = false;
