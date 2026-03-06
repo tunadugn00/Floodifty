@@ -30,7 +30,7 @@ public class HintManager : MonoBehaviour
 
     private void OpenShop()
     {
-        if(shopPanel != null)
+        if (shopPanel != null)
         {
             shopPanel.SetActive(true);
         }
@@ -61,18 +61,53 @@ public class HintManager : MonoBehaviour
 
         if (sr != null)
         {
+            // Lưu màu ban đầu để check
+            Tile.TileColor originalColor = hintTile.Color;
             Sprite originalSprite = sr.sprite;
             Sprite targetSprite = boardManager.colorSprites[(int)hintColor];
+            Vector3 originalScale = hintTile.transform.localScale;
 
+            DOTween.Kill(hintTile.transform);
+
+            // Nháy 3 lần (hoặc cho đến khi player fill)
             for (int i = 0; i < 3; i++)
             {
-                hintTile.transform.DOScale(hintTile.transform.localScale * 1.2f, 0.2f);
+                // ===== CHECK NẾU TILE ĐÃ BỊ FILL → DỪNG ANIMATION =====
+                if (hintTile.Color != originalColor)
+                {
+                    Debug.Log("[Hint] Tile đã bị fill, dừng animation!");
+                    hintTile.transform.localScale = originalScale;
+                    isHinting = false;
+                    yield break;
+                }
+
+                // Scale up
+                hintTile.transform.DOScale(originalScale * 1.2f, 0.2f);
                 sr.sprite = targetSprite;
                 yield return new WaitForSeconds(0.3f);
 
-                hintTile.transform.DOScale(Vector3.one, 0.2f);
+                // ===== CHECK LẦN NỮA =====
+                if (hintTile.Color != originalColor)
+                {
+                    Debug.Log("[Hint] Tile đã bị fill, dừng animation!");
+                    hintTile.transform.localScale = originalScale;
+                    isHinting = false;
+                    yield break;
+                }
+
+                // Scale down
+                hintTile.transform.DOScale(originalScale, 0.2f);
                 sr.sprite = originalSprite;
                 yield return new WaitForSeconds(0.2f);
+            }
+
+            // Force về trạng thái cuối
+            hintTile.transform.localScale = originalScale;
+
+            // Chỉ set sprite nếu màu chưa đổi
+            if (hintTile.Color == originalColor)
+            {
+                sr.sprite = originalSprite;
             }
         }
 
