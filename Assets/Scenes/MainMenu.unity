@@ -2399,6 +2399,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1136561766}
+  - component: {fileID: 1136561767}
   m_Layer: 0
   m_Name: ItemManager
   m_TagString: Untagged
@@ -2421,6 +2422,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1136561767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136561765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9d4c35dd9ee69643a467364560dee07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hintPrice: 100
+  hammerPrice: 200
+  colorBombPrice: 500
+  startingHints: 5
+  startingHammers: 99
+  startingColorBombs: 99
 --- !u!1 &1195662472
 GameObject:
   m_ObjectHideFlags: 0
@@ -4396,6 +4415,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac16f0e09eb11454f96775ca65ef61cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isEndlessMode: 0
 --- !u!4 &1903199503
 Transform:
   m_ObjectHideFlags: 0
@@ -4493,7 +4513,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1950709427}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1594759}
+        m_TargetAssemblyTypeName: MenuController, Assembly-CSharp
+        m_MethodName: EndlessButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1950709427
 MonoBehaviour:
   m_ObjectHideFlags: 0

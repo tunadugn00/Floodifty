@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
@@ -9,14 +9,21 @@ public class MenuController : MonoBehaviour
  
    public void PlayGameButton()
     {
-        SceneTransitionManager.Instance.LoadSceneWithAni("LevelSelect");
+        PlayerPrefs.SetInt("GameMode", 0);
+        PlayerPrefs.Save();
+
         SoundManager.Instance.PlayClick();
+        SceneTransitionManager.Instance.LoadSceneWithAni("LevelSelect");
     }
 
     public void EndlessButton()
     {
-        SceneTransitionManager.Instance.LoadSceneWithAni("LevelSelect");
+        PlayerPrefs.SetInt("GameMode", 1);
+        PlayerPrefs.SetInt("EndlessStage", 1); // Reset lại màn 1 của Endless
+        PlayerPrefs.Save();
+
         SoundManager.Instance.PlayClick();
+        SceneTransitionManager.Instance.LoadSceneWithAni("GameScene");
     }
 
     public void SettingButton()

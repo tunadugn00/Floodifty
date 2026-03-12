@@ -17,6 +17,7 @@ public class BoardManager : MonoBehaviour
     [Header("Level Database")]
     public LevelData currentLevel;
     public LevelDatabase database;
+    private EndlessLevelGenerator.GeneratedLevel currentEndlessLevel;
 
     private Tile[,] tiles;
     private int rows, cols;
@@ -26,13 +27,34 @@ public class BoardManager : MonoBehaviour
     private Tile.TileColor selectedColor;
     public ColorButton[] colorButtons;
 
+    // Block toàn bộ input board khi shop/popup đang mở
+    private bool isUIBlocking = false;
+    public void SetUIBlocking(bool blocking) { isUIBlocking = blocking; }
+
     void Start()
     {
-        int selected = PlayerPrefs.GetInt("SelectedLevel", 1);
-        currentLevel = database.GetLevel(selected);
-        LoadLevel(currentLevel);
-
-      
+        if (GameManager.Instance.isEndlessMode)
+        {
+            int stage = PlayerPrefs.GetInt("EndlessStage", 1);
+            LoadEndlessLevel(stage);
+        }
+        else
+        {
+            int selected = PlayerPrefs.GetInt("SelectedLevel", 1);
+            currentLevel = database.GetLevel(selected);
+            LoadLevel(currentLevel);
+        }
+    }
+    private Tile.TileColor ParseColor(string colorStr)
+    {
+        switch (colorStr)
+        {
+            case "R": return Tile.TileColor.Red;
+            case "G": return Tile.TileColor.Green;
+            case "B": return Tile.TileColor.Blue;
+            case "Y": return Tile.TileColor.Yellow;
+            default: return Tile.TileColor.Rock;
+        }
     }
 
     // Load level from LevelData
@@ -46,6 +68,7 @@ public class BoardManager : MonoBehaviour
 
         hudController?.SetMove(movesLeft);
         hudController?.SetGoal(goalColor);
+        hudController?.SetLevel(PlayerPrefs.GetInt("SelectedLevel", 1), false);
 
         GenerateBoard(data);
         floodAnimator.Init(tiles, rows, cols, colorSprites);
@@ -70,7 +93,7 @@ public class BoardManager : MonoBehaviour
                 GameObject tileObj = Instantiate(tilePrefab, transform);
                 tileObj.transform.localPosition = new Vector3(c * cellSize + offsetX, r * cellSize + offsetY, 0);
                 tileObj.transform.localScale = Vector3.zero;
-                
+
                 Tile tile = tileObj.GetComponent<Tile>();
                 tile.Row = r;
                 tile.Col = c;
@@ -92,20 +115,80 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
+    public void LoadEndlessLevel(int stage)
+    {
+        // Gọi AI tự động sinh level
+        currentEndlessLevel = EndlessLevelGenerator.GenerateLevel(stage);
+
+        rows = currentEndlessLevel.rows;
+        cols = currentEndlessLevel.cols;
+        goalColor = ParseColor(currentEndlessLevel.targetColor);
+        movesLeft = currentEndlessLevel.movesAllowed;
+        actualMovesUsed = 0;
+
+        hudController?.SetMove(movesLeft);
+        hudController?.SetGoal(goalColor);
+        hudController?.SetLevel(stage, true);
+
+        GenerateEndlessBoard(currentEndlessLevel);
+
+        floodAnimator.Init(tiles, rows, cols, colorSprites);
+        StartCoroutine(floodAnimator.AnimateBoardSpawn());
+    }
+
+    private void GenerateEndlessBoard(EndlessLevelGenerator.GeneratedLevel data)
+    {
+        foreach (Transform t in transform) Destroy(t.gameObject);
+
+        tiles = new Tile[rows, cols];
+        float offsetX = -(cols - 1) / 2f * cellSize;
+        float offsetY = -(rows - 1) / 2f * cellSize;
+
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                GameObject tileObj = Instantiate(tilePrefab, transform);
+                tileObj.transform.localPosition = new Vector3(c * cellSize + offsetX, r * cellSize + offsetY, 0);
+                tileObj.transform.localScale = Vector3.zero;
+
+                Tile tile = tileObj.GetComponent<Tile>();
+                tile.Row = r;
+                tile.Col = c;
+
+                var color = ParseColor(data.layout[r, c]);
+                tile.Color = color;
+
+                var sr = tileObj.GetComponent<SpriteRenderer>();
+                sr.sprite = colorSprites[(int)color]; // Không render đá ở Endless tạm thời
+
+                tiles[r, c] = tile;
+            }
+        }
+    }
     public void ResetBoard()
     {
-        movesLeft = currentLevel.movesAllowed;
         actualMovesUsed = 0;
+
+        // Phân luồng Reset
+        if (GameManager.Instance.isEndlessMode && currentEndlessLevel != null)
+        {
+            movesLeft = currentEndlessLevel.movesAllowed;
+            goalColor = ParseColor(currentEndlessLevel.targetColor);
+            GenerateEndlessBoard(currentEndlessLevel);
+        }
+        else
+        {
+            movesLeft = currentLevel.movesAllowed;
+            goalColor = currentLevel.targetColor;
+            GenerateBoard(currentLevel);
+        }
+
         hudController?.SetMove(movesLeft);
-
-        goalColor = currentLevel.targetColor;
         hudController?.SetGoal(goalColor);
-
-        GenerateBoard(currentLevel);
 
         // Re-init lại animator với tile mới
         floodAnimator.Init(tiles, rows, cols, colorSprites);
-
         StartCoroutine(floodAnimator.AnimateBoardSpawn());
     }
     public void AddMove()
@@ -120,9 +203,9 @@ public class BoardManager : MonoBehaviour
         selectedColor = color;
         SoundManager.Instance.PlayClick();
 
-        foreach(var btn in colorButtons)
+        foreach (var btn in colorButtons)
         {
-            if(btn != null)
+            if (btn != null)
             {
                 btn.UpdateVisualState(color);
             }
@@ -131,6 +214,8 @@ public class BoardManager : MonoBehaviour
 
     public void OnTileClicked(int r, int c)
     {
+        // Block nếu shop/popup đang mở
+        if (isUIBlocking) return;
         if (!GameManager.Instance.IsGameActive()) return;
 
         Tile.TileColor originalColor = tiles[r, c].Color;
@@ -167,10 +252,17 @@ public class BoardManager : MonoBehaviour
 
         yield return StartCoroutine(floodAnimator.AnimateFloodFill(r, c, originalColor, replacementColor));
 
-        if (CheckWin()) {
-            //tính *
-            int stars = StarSystem.CalculateStars(actualMovesUsed, currentLevel.movesAllowed);
-            //coin
+        if (CheckWin())
+        {
+            int stars = 1;
+            if (!GameManager.Instance.isEndlessMode && currentLevel != null)
+            {
+                stars = StarSystem.CalculateStars(actualMovesUsed, currentLevel.movesAllowed);
+            }
+            else if (currentEndlessLevel != null)
+            {
+                stars = StarSystem.CalculateStars(actualMovesUsed, currentEndlessLevel.movesAllowed);
+            }
             int coinsEarned = RewardManager.Instance.GiveReward(stars);
             uiController?.UIWin(stars);
         }
@@ -178,21 +270,26 @@ public class BoardManager : MonoBehaviour
             uiController?.UILose();
     }
 
-    
+
     private bool CheckWin()
+    {
+        for (int r = 0; r < rows; r++)
         {
-            for (int r = 0; r < rows; r++)
+            for (int c = 0; c < cols; c++)
             {
-                for (int c = 0; c < cols; c++)
-                {
-                    if (tiles[r, c].Color != goalColor && !tiles[r,c].isRock)
-                        return false;
-                }
+                if (tiles[r, c].Color != goalColor && !tiles[r, c].isRock)
+                    return false;
             }
-            return true;
         }
+        return true;
+    }
     public Tile[,] GetTiles()
     {
         return tiles;
+    }
+
+    public Tile.TileColor GetGoalColor()
+    {
+        return goalColor;
     }
 }

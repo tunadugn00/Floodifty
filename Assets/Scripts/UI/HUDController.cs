@@ -8,6 +8,8 @@ public class HUDController : MonoBehaviour
     public TextMeshProUGUI movesValue;
     public TextMeshProUGUI goalText;
     public TextMeshProUGUI goalValue;
+    public TextMeshProUGUI levelLabel;
+    public TextMeshProUGUI levelValue;
 
     [Header("ITEM")]
     public TextMeshProUGUI hintCountText;
@@ -35,6 +37,14 @@ public class HUDController : MonoBehaviour
             int count = ItemManager.Instance.GetColorBombCount();
             bombCountText.text = count > 0 ? count.ToString() : "+";
         }
+    }
+    public void SetLevel(int level, bool isEndless)
+    {
+        if (levelLabel != null)
+            levelLabel.text = isEndless ? "Stage" : "Level";
+
+        if (levelValue != null)
+            levelValue.text = level.ToString();
     }
     public void SetMove(int moves)
     {

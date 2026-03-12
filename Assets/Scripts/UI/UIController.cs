@@ -16,7 +16,7 @@ public class UIController : MonoBehaviour
     public CanvasGroup pausedPanel;
     public RectTransform pausedWindow;
 
-    private void  OnEnable()
+    private void OnEnable()
     {
         AdsManager.OnUserEarnedReward += GiveReward;
     }
@@ -38,12 +38,15 @@ public class UIController : MonoBehaviour
         SoundManager.Instance.PlayWin();
         starDisplay.Show(stars);
 
-        int currentLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
+        // Chỉ lưu progress level thường khi KHÔNG phải Endless mode
+        if (!GameManager.Instance.isEndlessMode)
+        {
+            int currentLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
+            SaveSystem.SetLevelStars(currentLevel, stars);
+            SaveSystem.SetUnlockedLevel(currentLevel + 1);
+        }
 
-        SaveSystem.SetLevelStars(currentLevel, stars);// lưu *
-        SaveSystem.SetUnlockedLevel(currentLevel + 1); // unlock level tiếp theo
- 
-        if(Random.Range(0,2) == 0)
+        if (Random.Range(0, 2) == 0)
         {
             AdsManager.Instance.ShowInterstitialAd();
         }
@@ -76,18 +79,31 @@ public class UIController : MonoBehaviour
 
     public void NextLevelButton()
     {
-        int currentLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
-        int nextLevel = currentLevel + 1;
-
-        if(nextLevel > FindAnyObjectByType<BoardManager>().database.TotalLevels)
+        if (GameManager.Instance.isEndlessMode)
         {
-            SceneTransitionManager.Instance.LoadSceneWithAni("LevelSelect");
+            // 1. Tăng stage hiện tại
+            int currentStage = PlayerPrefs.GetInt("EndlessStage", 1);
+            PlayerPrefs.SetInt("EndlessStage", currentStage + 1);
+
+            // 2. Load lại Scene (Trong hàm Start() của BoardManager, ông gọi EndlessLevelGenerator.GenerateLevel để vẽ bảng)
+            SceneManager.LoadScene("GameScene");
         }
         else
         {
-            PlayerPrefs.SetInt("SelectedLevel", nextLevel);
-            SceneTransitionManager.Instance.LoadSceneWithAni("GameScene");
-        }   
+            int currentLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
+            int nextLevel = currentLevel + 1;
+
+            if (nextLevel > FindAnyObjectByType<BoardManager>().database.TotalLevels)
+            {
+                SceneTransitionManager.Instance.LoadSceneWithAni("LevelSelect");
+            }
+            else
+            {
+                PlayerPrefs.SetInt("SelectedLevel", nextLevel);
+                SceneTransitionManager.Instance.LoadSceneWithAni("GameScene");
+            }
+        }
+
         SoundManager.Instance.PlayClick();
     }
     public void ResumeButton()
