@@ -27,7 +27,6 @@ public class BoardManager : MonoBehaviour
     private Tile.TileColor selectedColor;
     public ColorButton[] colorButtons;
 
-    // Block toàn bộ input board khi shop/popup đang mở
     private bool isUIBlocking = false;
     public void SetUIBlocking(bool blocking) { isUIBlocking = blocking; }
 
@@ -56,8 +55,6 @@ public class BoardManager : MonoBehaviour
             default: return Tile.TileColor.Rock;
         }
     }
-
-    // Load level from LevelData
     public void LoadLevel(LevelData data)
     {
         rows = data.rows;
@@ -76,10 +73,8 @@ public class BoardManager : MonoBehaviour
         StartCoroutine(floodAnimator.AnimateBoardSpawn());
     }
 
-    // spawn board from LevelData
     private void GenerateBoard(LevelData data)
     {
-        // Clear old board 
         foreach (Transform t in transform) Destroy(t.gameObject);
 
         tiles = new Tile[rows, cols];
@@ -117,7 +112,6 @@ public class BoardManager : MonoBehaviour
     }
     public void LoadEndlessLevel(int stage)
     {
-        // Gọi AI tự động sinh level
         currentEndlessLevel = EndlessLevelGenerator.GenerateLevel(stage);
 
         rows = currentEndlessLevel.rows;
@@ -160,7 +154,7 @@ public class BoardManager : MonoBehaviour
                 tile.Color = color;
 
                 var sr = tileObj.GetComponent<SpriteRenderer>();
-                sr.sprite = colorSprites[(int)color]; // Không render đá ở Endless tạm thời
+                sr.sprite = colorSprites[(int)color];
 
                 tiles[r, c] = tile;
             }
@@ -169,8 +163,6 @@ public class BoardManager : MonoBehaviour
     public void ResetBoard()
     {
         actualMovesUsed = 0;
-
-        // Phân luồng Reset
         if (GameManager.Instance.isEndlessMode && currentEndlessLevel != null)
         {
             movesLeft = currentEndlessLevel.movesAllowed;
@@ -187,7 +179,6 @@ public class BoardManager : MonoBehaviour
         hudController?.SetMove(movesLeft);
         hudController?.SetGoal(goalColor);
 
-        // Re-init lại animator với tile mới
         floodAnimator.Init(tiles, rows, cols, colorSprites);
         StartCoroutine(floodAnimator.AnimateBoardSpawn());
     }
@@ -214,7 +205,6 @@ public class BoardManager : MonoBehaviour
 
     public void OnTileClicked(int r, int c)
     {
-        // Block nếu shop/popup đang mở
         if (isUIBlocking) return;
         if (!GameManager.Instance.IsGameActive()) return;
 
@@ -263,8 +253,7 @@ public class BoardManager : MonoBehaviour
             {
                 stars = StarSystem.CalculateStars(actualMovesUsed, currentEndlessLevel.movesAllowed);
             }
-            int coinsEarned = RewardManager.Instance.GiveReward(stars);
-            uiController?.UIWin(stars);
+            uiController?.UIWin(stars, movesLeft);
         }
         else if (movesLeft <= 0)
             uiController?.UILose();
