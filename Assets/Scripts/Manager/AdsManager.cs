@@ -1,4 +1,4 @@
-﻿using GoogleMobileAds.Api;
+using GoogleMobileAds.Api;
 using System;
 using UnityEngine;
 
@@ -45,8 +45,6 @@ public class AdsManager : MonoBehaviour
         //Khởi tạo AdMob SDK
         MobileAds.Initialize((InitializationStatus status) =>
         {
-            Debug.Log("AdMob SDK Initialized");
-
             LoadBannerAd();
             LoadInterstitialAd();
             LoadRewardedAd();
@@ -56,7 +54,6 @@ public class AdsManager : MonoBehaviour
     #region --- Banner Ads ----
     public void LoadBannerAd()
     {
-        Debug.Log("Loading Banner Ad....");
         //Tạo request
         AdRequest request = new AdRequest();
         //Tạo banner
@@ -76,7 +73,6 @@ public class AdsManager : MonoBehaviour
     #region --- Interstitial Ads ----
     public void LoadInterstitialAd()
     {
-        Debug.Log("Loading Interstitial Ad...");
         AdRequest request = new AdRequest();
 
         //tải ads
@@ -84,11 +80,9 @@ public class AdsManager : MonoBehaviour
         {
             if( error != null || ad == null)
             {
-                Debug.LogError("Interstitial ad failed to load: " + error);
                 return;
             }
             _interstitialAd = ad;
-            Debug.Log("Interstitial Ad loaded.");
             RegisterInterstitialEvents(ad);
         });
     }
@@ -97,12 +91,10 @@ public class AdsManager : MonoBehaviour
     {
         if(_interstitialAd != null && _interstitialAd.CanShowAd())
         {
-            Debug.Log("Showing Interstitial Ad.");
             _interstitialAd.Show();
         }
         else
         {
-            Debug.LogError("Interstitial ad is not ready yet.");
             LoadInterstitialAd();
         }
     }
@@ -111,14 +103,12 @@ public class AdsManager : MonoBehaviour
     {
         ad.OnAdFullScreenContentClosed += () =>
         {
-            Debug.Log("Interstitial Ad closed.");
             _interstitialAd.Destroy();
             LoadInterstitialAd();
         };
 
         ad.OnAdFullScreenContentFailed += (AdError error) =>
         {
-            Debug.LogError("Interstitial ad failed to show: " + error.GetMessage());
             _interstitialAd.Destroy();
             LoadInterstitialAd();
         };
@@ -128,19 +118,16 @@ public class AdsManager : MonoBehaviour
     #region --- Rewarded Ads ---
     public void LoadRewardedAd()
     {
-        Debug.Log("Loading Rewarded Ad...");
         AdRequest request = new AdRequest();
 
         RewardedAd.Load(_rewardedId, request, (RewardedAd ad, LoadAdError error) =>
         {
             if (error != null || ad == null)
             {
-                Debug.LogError("Rewarded ad failed to load: " + error);
                 return;
             }
 
             _rewardedAd = ad;
-            Debug.Log("Rewarded Ad loaded.");
 
             // Đăng ký sự kiện
             RegisterRewardedEvents(ad);
@@ -151,17 +138,14 @@ public class AdsManager : MonoBehaviour
     {
         if (_rewardedAd != null && _rewardedAd.CanShowAd())
         {
-            Debug.Log("Showing Rewarded Ad.");
             _rewardedAd.Show((Reward reward) =>
             {
                 //trả thưởng
-                Debug.Log("User earned reward! Type: " + reward.Type + ", Amount: " + reward.Amount);
                 OnUserEarnedReward?.Invoke();
             });
         }
         else
         {
-            Debug.LogError("Rewarded ad is not ready yet.");
             LoadRewardedAd();
         }
     }
@@ -170,7 +154,6 @@ public class AdsManager : MonoBehaviour
         //Khi ads bị đóng
         ad.OnAdFullScreenContentClosed += () =>
         {
-            Debug.Log("Rewarded Ad closed.");
             _rewardedAd.Destroy();
             LoadRewardedAd();
         };
@@ -178,7 +161,6 @@ public class AdsManager : MonoBehaviour
         //khi lỗi show
         ad.OnAdFullScreenContentFailed += (AdError error) =>
         {
-            Debug.LogError("Rewarded ad failed to show: " + error.GetMessage());
             _rewardedAd.Destroy();
             LoadRewardedAd();
         };

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
@@ -14,16 +14,12 @@ public static class MCTSHintSolver
         int cols,
         Tile.TileColor targetColor)
     {
-        Debug.Log($"[MCTS Hint] Bắt đầu tìm hint với {SIMULATION_COUNT} simulations...");
-
-        var startTime = System.DateTime.Now;
 
         // Tìm tất cả moves có thể
         var possibleMoves = GetAllPossibleMoves(tiles, rows, cols, targetColor);
 
         if (possibleMoves.Count == 0)
         {
-            Debug.LogWarning("[MCTS Hint] Không tìm thấy move hợp lệ!");
             return (-1, -1, targetColor);
         }
 
@@ -45,10 +41,6 @@ public static class MCTSHintSolver
 
         // Chọn move có score cao nhất
         var bestMove = moveScores.OrderByDescending(x => x.Value).First();
-
-        var elapsed = (System.DateTime.Now - startTime).TotalMilliseconds;
-        Debug.Log($"[MCTS Hint] Tìm thấy best move trong {elapsed:F0}ms");
-        Debug.Log($"[MCTS Hint] Best: ({bestMove.Key.Item1}, {bestMove.Key.Item2}) → {bestMove.Key.Item3} (Score: {bestMove.Value:F2})");
 
         return bestMove.Key;
     }

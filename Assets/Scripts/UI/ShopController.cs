@@ -1,11 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 using TMPro;
 
-/// <summary>
-/// Shop Controller - KHÔNG PAUSE GAME!
-/// </summary>
 public class ShopController : MonoBehaviour
 {
     [Header("Shop UI")]
@@ -36,44 +33,26 @@ public class ShopController : MonoBehaviour
         // Setup buttons trong Awake - chạy kể cả khi shopPanel đang SetActive(false)
         if (hintBuyButton != null)
             hintBuyButton.onClick.AddListener(OnBuyHint);
-        else
-            Debug.LogError("[Shop] hintBuyButton is NULL! Chưa assign trong Inspector.");
 
         if (hammerBuyButton != null)
             hammerBuyButton.onClick.AddListener(OnBuyHammer);
-        else
-            Debug.LogError("[Shop] hammerBuyButton is NULL!");
 
         if (colorBombBuyButton != null)
             colorBombBuyButton.onClick.AddListener(OnBuyColorBomb);
-        else
-            Debug.LogError("[Shop] colorBombBuyButton is NULL!");
 
         if (closeButton != null)
             closeButton.onClick.AddListener(CloseShop);
-        else
-            Debug.LogError("[Shop] closeButton is NULL!");
     }
 
     void Start()
     {
-        // Subscribe to coin changes
         if (CurrencyManager.Instance != null)
             CurrencyManager.Instance.OnCoinsChanged += OnCoinsChanged;
 
-        // KHÔNG gọi UpdatePrices ở Start() vì ItemManager singleton chưa chắc ready
-        // Close shop at start - ShopPanel GameObject phải active lúc này để Awake/Start chạy
         if (shopPanel != null)
             shopPanel.gameObject.SetActive(false);
     }
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("ShopController IS running!");
-            OnBuyHint();
-        }
-    }
+
     void OnDestroy()
     {
         if (CurrencyManager.Instance != null)
@@ -111,7 +90,6 @@ public class ShopController : MonoBehaviour
         UpdateButtonStates();
 
         SoundManager.Instance?.PlayClick();
-        Debug.Log($"[Shop] Opened! Coins={CurrencyManager.Instance?.GetCoins()} | HintPrice={ItemManager.Instance?.GetHintPrice()} | ItemManager null={ItemManager.Instance == null}");
     }
 
     public void CloseShop()
@@ -132,16 +110,13 @@ public class ShopController : MonoBehaviour
             });
 
         SoundManager.Instance?.PlayClick();
-        Debug.Log("[Shop] Closed!");
     }
 
     // ===== BUY ITEMS =====
 
     public void OnBuyHint()
     {
-        Debug.Log($"[Shop] BUY HINT clicked | ItemManager null={ItemManager.Instance == null} | CurrencyManager null={CurrencyManager.Instance == null} | Coins={CurrencyManager.Instance?.GetCoins()} | Price={ItemManager.Instance?.GetHintPrice()}");
-
-        if (ItemManager.Instance == null) { Debug.LogError("[Shop] ItemManager.Instance is NULL!"); return; }
+        if (ItemManager.Instance == null) { return; }
 
         if (ItemManager.Instance.BuyHint())
         {
@@ -150,16 +125,13 @@ public class ShopController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"[Shop] BuyHint FAILED - Coins={CurrencyManager.Instance?.GetCoins()} Price={ItemManager.Instance?.GetHintPrice()}");
             OnPurchaseFailed();
         }
     }
 
     public void OnBuyHammer()
     {
-        Debug.Log($"[Shop] BUY HAMMER clicked | Coins={CurrencyManager.Instance?.GetCoins()} | Price={ItemManager.Instance?.GetHammerPrice()}");
-
-        if (ItemManager.Instance == null) { Debug.LogError("[Shop] ItemManager.Instance is NULL!"); return; }
+        if (ItemManager.Instance == null) { return; }
 
         if (ItemManager.Instance.BuyHammer())
         {
@@ -174,9 +146,7 @@ public class ShopController : MonoBehaviour
 
     public void OnBuyColorBomb()
     {
-        Debug.Log($"[Shop] BUY COLORBOMB clicked | Coins={CurrencyManager.Instance?.GetCoins()} | Price={ItemManager.Instance?.GetColorBombPrice()}");
-
-        if (ItemManager.Instance == null) { Debug.LogError("[Shop] ItemManager.Instance is NULL!"); return; }
+        if (ItemManager.Instance == null) { return; }
 
         if (ItemManager.Instance.BuyColorBomb())
         {
@@ -193,14 +163,13 @@ public class ShopController : MonoBehaviour
 
     private void OnPurchaseSuccess(string itemName)
     {
-        Debug.Log($"[Shop] Bought {itemName}!");
         SoundManager.Instance?.PlayClick();
         UpdateButtonStates();
     }
 
     private void OnPurchaseFailed()
     {
-        Debug.LogWarning("[Shop] Not enough coins!");
+        SoundManager.VibrateIfEnabled();
 
         // Shake window
         if (shopWindow != null)
@@ -245,7 +214,9 @@ public class ShopController : MonoBehaviour
     {
         if (button == null) return;
 
-        button.interactable = canBuy;
+        // Luôn cho phép click để khi thiếu tiền vẫn có feedback (rung/shake).
+        // Việc mua thành công/ thất bại được quyết định trong OnBuyXXX() (ItemManager.BuyXXX()).
+        button.interactable = true;
 
         // Change color
         var colors = button.colors;
