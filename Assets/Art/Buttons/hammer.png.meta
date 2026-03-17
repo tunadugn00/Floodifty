@@ -1,19 +1,10 @@
 fileFormatVersion: 2
-guid: d0306cfc552bc1846a9539925c1e7b40
+guid: f085d9531073f984687b9976c921b5d6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5902989841593981786
-    second: Button Add_0
-  - first:
-      213: 9182168366375351060
-    second: Button Add_1
-  - first:
-      213: -7327869801192785597
-    second: Button Add_2
-  - first:
-      213: -4322415040103527489
-    second: Button Add_3
+      213: 4301844918096825189
+    second: hammer_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -55,13 +46,13 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 243, w: 1}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -122,89 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Button Add_0
-      rect:
-        serializedVersion: 2
-        x: 30
-        y: 0
-        width: 184
-        height: 187
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6a42d03b30e541ea0800000000000000
-      internalID: -5902989841593981786
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Button Add_1
+      name: hammer_0
       rect:
         serializedVersion: 2
         x: 234
-        y: 0
-        width: 184
-        height: 187
+        y: 74
+        width: 223
+        height: 228
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 413b1a1ea7d9d6f70800000000000000
-      internalID: 9182168366375351060
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Button Add_2
-      rect:
-        serializedVersion: 2
-        x: 439
-        y: 0
-        width: 184
-        height: 187
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 34977939d3d2e4a90800000000000000
-      internalID: -7327869801192785597
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Button Add_3
-      rect:
-        serializedVersion: 2
-        x: 643
-        y: 0
-        width: 185
-        height: 187
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: fbbc2d21c62b304c0800000000000000
-      internalID: -4322415040103527489
+      spriteID: 56b0bfd292933bb30800000000000000
+      internalID: 4301844918096825189
       vertices: []
       indices: 
       edges: []
@@ -213,8 +138,8 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
-    internalID: 0
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 1537655665
     vertices: []
     indices: 
     edges: []
@@ -223,10 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Button Add_0: -5902989841593981786
-      Button Add_1: 9182168366375351060
-      Button Add_2: -7327869801192785597
-      Button Add_3: -4322415040103527489
+      hammer_0: 4301844918096825189
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

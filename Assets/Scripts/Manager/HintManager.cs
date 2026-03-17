@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 
@@ -6,34 +6,12 @@ public class HintManager : MonoBehaviour
 {
     public BoardManager boardManager;
     public HUDController hudController;
-    public ShopController shopController;
     private bool isHinting = false;
 
-    public void OnHintButtonClicked()
+    public void StartHint()
     {
         if (isHinting) return;
-
-        if (!ItemManager.Instance.HasHint())
-        {
-            OpenShop();
-            SoundManager.Instance?.PlayClick();
-            return;
-        }
-        bool success = ItemManager.Instance.UseHint();
-
-        if (success)
-        {
-            hudController?.UpdateItemCounts();
-            StartCoroutine(ShowHintRoutine());
-        }
-    }
-
-    private void OpenShop()
-    {
-        if (shopController != null)
-        {
-            shopController.OpenShop();
-        }
+        StartCoroutine(ShowHintRoutine());
     }
 
     private IEnumerator ShowHintRoutine()

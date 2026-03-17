@@ -1,7 +1,8 @@
-﻿using DG.Tweening;
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class BoardManager : MonoBehaviour
 {
@@ -29,6 +30,87 @@ public class BoardManager : MonoBehaviour
 
     private bool isUIBlocking = false;
     public void SetUIBlocking(bool blocking) { isUIBlocking = blocking; }
+
+    private bool hammerArmed = false;
+
+    public void ArmHammer()
+    {
+        if (ItemManager.Instance != null && ItemManager.Instance.HasHammer())
+        {
+            hammerArmed = true;
+            SoundManager.Instance?.PlayClick();
+        }
+        else
+        {
+            SoundManager.VibrateIfEnabled();
+        }
+    }
+
+    public void DisarmHammer()
+    {
+        hammerArmed = false;
+    }
+    
+    public void UseHammerOnTile(int r, int c)
+    {
+        if (!GameManager.Instance.IsGameActive()) return;
+        if (isUIBlocking) return;
+        if (tiles == null) return;
+        if (ItemManager.Instance == null) return;
+        if (r < 0 || r >= rows || c < 0 || c >= cols) return;
+
+        Tile tile = tiles[r, c];
+        if (tile == null || !tile.isRock)
+        {
+            SoundManager.VibrateIfEnabled();
+            return;
+        }
+
+        if (!ItemManager.Instance.UseHammer())
+        {
+            SoundManager.VibrateIfEnabled();
+            return;
+        }
+
+        Tile.TileColor newColor = GetDominantNeighborColor(r, c);
+        tile.Color = newColor;
+
+        var sr = tile.GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.sprite = colorSprites[(int)newColor];
+        }
+
+        hudController?.UpdateItemCounts();
+        SoundManager.Instance?.PlayClick();
+    }
+
+    private Tile.TileColor GetDominantNeighborColor(int r, int c)
+    {
+        int[] dr = { 1, -1, 0, 0 };
+        int[] dc = { 0, 0, 1, -1 };
+
+        var counts = new Dictionary<Tile.TileColor, int>();
+
+        for (int i = 0; i < 4; i++)
+        {
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) continue;
+
+            Tile neighbor = tiles[nr, nc];
+            if (neighbor == null || neighbor.isRock) continue;
+
+            if (!counts.ContainsKey(neighbor.Color))
+                counts[neighbor.Color] = 0;
+            counts[neighbor.Color]++;
+        }
+
+        if (counts.Count == 0)
+            return goalColor;
+
+        return counts.OrderByDescending(kv => kv.Value).First().Key;
+    }
 
     void Start()
     {
@@ -207,6 +289,14 @@ public class BoardManager : MonoBehaviour
     {
         if (isUIBlocking) return;
         if (!GameManager.Instance.IsGameActive()) return;
+
+        // Nếu đang "arm" Hammer thì click tiếp theo sẽ ưu tiên phá đá (không flood-fill)
+        if (hammerArmed)
+        {
+            UseHammerOnTile(r, c);
+            hammerArmed = false;
+            return;
+        }
 
         Tile.TileColor originalColor = tiles[r, c].Color;
         if (originalColor == selectedColor)
