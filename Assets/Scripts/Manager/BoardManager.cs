@@ -27,17 +27,20 @@ public class BoardManager : MonoBehaviour
     private int actualMovesUsed;
     private Tile.TileColor selectedColor;
     public ColorButton[] colorButtons;
+    public ItemButtonController itemButtonController;
 
     private bool isUIBlocking = false;
     public void SetUIBlocking(bool blocking) { isUIBlocking = blocking; }
 
     private bool hammerArmed = false;
+    private bool colorBombArmed = false;
 
     public void ArmHammer()
     {
         if (ItemManager.Instance != null && ItemManager.Instance.HasHammer())
         {
             hammerArmed = true;
+            colorBombArmed = false;
             SoundManager.Instance?.PlayClick();
         }
         else
@@ -49,6 +52,25 @@ public class BoardManager : MonoBehaviour
     public void DisarmHammer()
     {
         hammerArmed = false;
+    }
+
+    public void ArmColorBomb()
+    {
+        if (ItemManager.Instance != null && ItemManager.Instance.HasColorBomb())
+        {
+            colorBombArmed = true;
+            hammerArmed = false;
+            SoundManager.Instance?.PlayClick();
+        }
+        else
+        {
+            SoundManager.VibrateIfEnabled();
+        }
+    }
+
+    public void DisarmColorBomb()
+    {
+        colorBombArmed = false;
     }
     
     public void UseHammerOnTile(int r, int c)
@@ -298,6 +320,14 @@ public class BoardManager : MonoBehaviour
             return;
         }
 
+        // Nếu đang "arm" Color Bomb: click 1 tile A để chuyển toàn bộ A -> selectedColor (B)
+        if (colorBombArmed)
+        {
+            UseColorBombOnTile(r, c);
+            colorBombArmed = false;
+            return;
+        }
+
         Tile.TileColor originalColor = tiles[r, c].Color;
         if (originalColor == selectedColor)
         {
@@ -308,6 +338,42 @@ public class BoardManager : MonoBehaviour
 
         SoundManager.Instance.PlayFillClick();
         StartCoroutine(RunFloodFill(r, c, originalColor, selectedColor));
+    }
+
+    public void UseColorBombOnTile(int r, int c)
+    {
+        if (!GameManager.Instance.IsGameActive()) return;
+        if (isUIBlocking) return;
+        if (tiles == null) return;
+        if (ItemManager.Instance == null) return;
+        if (r < 0 || r >= rows || c < 0 || c >= cols) return;
+
+        Tile tile = tiles[r, c];
+        if (tile == null || tile.isRock)
+        {
+            SoundManager.VibrateIfEnabled();
+            return;
+        }
+
+        Tile.TileColor fromColor = tile.Color;   // A
+        Tile.TileColor toColor = selectedColor;  // B
+
+        if (fromColor == toColor)
+        {
+            SoundManager.VibrateIfEnabled();
+            SoundManager.Instance?.PlayClick();
+            return;
+        }
+
+        if (!ItemManager.Instance.UseColorBomb())
+        {
+            SoundManager.VibrateIfEnabled();
+            return;
+        }
+
+        hudController?.UpdateItemCounts();
+        SoundManager.Instance?.PlayFillClick();
+        StartCoroutine(RunColorBomb(fromColor, toColor));
     }
 
     private void FloodFill(int r, int c, Tile.TileColor targetColor, Tile.TileColor replacementColor)
@@ -347,6 +413,32 @@ public class BoardManager : MonoBehaviour
         }
         else if (movesLeft <= 0)
             uiController?.UILose();
+    }
+
+    private IEnumerator RunColorBomb(Tile.TileColor fromColor, Tile.TileColor toColor)
+    {
+        if (floodAnimator != null)
+            yield return StartCoroutine(floodAnimator.AnimateColorBomb(fromColor, toColor));
+
+        itemButtonController?.OnColorBombConsumed();
+
+        if (CheckWin())
+        {
+            int stars = 1;
+            if (!GameManager.Instance.isEndlessMode && currentLevel != null)
+            {
+                stars = StarSystem.CalculateStars(actualMovesUsed, currentLevel.movesAllowed);
+            }
+            else if (currentEndlessLevel != null)
+            {
+                stars = StarSystem.CalculateStars(actualMovesUsed, currentEndlessLevel.movesAllowed);
+            }
+            uiController?.UIWin(stars, movesLeft);
+        }
+        else if (movesLeft <= 0)
+        {
+            uiController?.UILose();
+        }
     }
 
 

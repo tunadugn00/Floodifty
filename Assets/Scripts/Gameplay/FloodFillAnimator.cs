@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
@@ -88,6 +88,46 @@ public class FloodFillAnimator : MonoBehaviour
             }
             // Delay giữa các lớp -> tạo hiệu ứng sóng lan
             yield return new WaitForSeconds(layerDelay);
+        }
+    }
+
+    public IEnumerator AnimateColorBomb(Tile.TileColor fromColor, Tile.TileColor toColor)
+    {
+        if (tiles == null) yield break;
+        if (fromColor == toColor) yield break;
+
+        List<Tile> affected = new List<Tile>();
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                Tile t = tiles[r, c];
+                if (t == null || t.isRock) continue;
+                if (t.Color != fromColor) continue;
+                affected.Add(t);
+            }
+        }
+
+        // Shuffle nhẹ để hiệu ứng "lấp lánh" ngẫu nhiên
+        for (int i = 0; i < affected.Count; i++)
+        {
+            int j = Random.Range(i, affected.Count);
+            (affected[i], affected[j]) = (affected[j], affected[i]);
+        }
+
+        int particleBudget = 6;
+        foreach (var tile in affected)
+        {
+            tile.Color = toColor;
+            StartCoroutine(TweenColor(tile, toColor, tweenDuration));
+
+            if (particleBudget > 0)
+            {
+                SpawnParticle(tile, toColor);
+                particleBudget--;
+            }
+
+            yield return new WaitForSeconds(layerDelay * 0.35f);
         }
     }
 

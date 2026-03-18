@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 public class ItemButtonController : MonoBehaviour
 {
@@ -6,6 +7,18 @@ public class ItemButtonController : MonoBehaviour
     [SerializeField] private ShopController shopController;
     [SerializeField] private HUDController hudController;
     [SerializeField] private BoardManager boardManager;
+
+    [Header("Color Bomb UI")]
+    [SerializeField] private RectTransform colorBombButtonTransform;
+    [SerializeField] private CanvasGroup colorBombHintGroup;
+
+    private bool isColorBombArmed = false;
+
+    private void Start()
+    {
+        // Đảm bảo vào scene ban đầu không có gì đang highlight
+        UpdateColorBombVisual(false);
+    }
 
     // 1. Nút Hint – dùng flow cũ, nhưng gói lại
     public void OnHintButtonClicked()
@@ -52,7 +65,7 @@ public class ItemButtonController : MonoBehaviour
     // 3. Nút Color Bomb – tương tự Hammer, để TODO
     public void OnColorBombButtonClicked()
     {
-        if (ItemManager.Instance == null) return;
+        if (ItemManager.Instance == null || boardManager == null) return;
 
         if (!ItemManager.Instance.HasColorBomb())
         {
@@ -64,7 +77,59 @@ public class ItemButtonController : MonoBehaviour
             return;
         }
 
-        // TODO: bước sau implement Color Bomb
-        SoundManager.VibrateIfEnabled();
+        // Toggle trạng thái armed
+        if (!isColorBombArmed)
+        {
+            boardManager.ArmColorBomb();
+            isColorBombArmed = true;
+            UpdateColorBombVisual(true);
+        }
+        else
+        {
+            boardManager.DisarmColorBomb();
+            isColorBombArmed = false;
+            UpdateColorBombVisual(false);
+        }
     }
+
+    public void OnColorBombConsumed()
+    {
+        isColorBombArmed = false;
+        UpdateColorBombVisual(false);
+    }
+
+    private void UpdateColorBombVisual(bool armed)
+    {
+        if (colorBombButtonTransform != null)
+        {
+            DOTween.Kill(colorBombButtonTransform);
+            if (armed)
+            {
+                colorBombButtonTransform.localScale = Vector3.one;
+                colorBombButtonTransform
+                    .DOScale(1.15f, 0.35f)
+                    .SetLoops(-1, LoopType.Yoyo)
+                    .SetEase(Ease.InOutSine);
+            }
+            else
+            {
+                colorBombButtonTransform.localScale = Vector3.one;
+            }
+        }
+
+        if (colorBombHintGroup != null)
+        {
+            // Đảm bảo GameObject luôn active, chỉ ẩn/hiện bằng alpha
+            if (!colorBombHintGroup.gameObject.activeSelf)
+                colorBombHintGroup.gameObject.SetActive(true);
+
+            DOTween.Kill(colorBombHintGroup);
+            float targetAlpha = armed ? 1f : 0f;
+            colorBombHintGroup.alpha = targetAlpha;
+
+            colorBombHintGroup.interactable = false;
+            colorBombHintGroup.blocksRaycasts = false;
+        }
+    }
+
 }
