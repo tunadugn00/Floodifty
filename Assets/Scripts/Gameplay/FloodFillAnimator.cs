@@ -14,6 +14,7 @@ public class FloodFillAnimator : MonoBehaviour
     private int rows, cols;
 
     public GameObject particlePrefab;
+    public GameObject rockParticlePrefab;
 
     public void Init(Tile[,] tiles, int rows, int cols, Sprite[] sprites)
     {

@@ -94,6 +94,19 @@ public class BoardManager : MonoBehaviour
             return;
         }
 
+        // Spawn rock break FX
+        if (floodAnimator != null && floodAnimator.rockParticlePrefab != null)
+        {
+            var fx = Instantiate(
+                floodAnimator.rockParticlePrefab,
+                tile.transform.position,
+                Quaternion.identity
+            );
+
+            // Ensure FX doesn't leak (prefab should be non-looping)
+            Destroy(fx, 1.5f);
+        }
+
         Tile.TileColor newColor = GetDominantNeighborColor(r, c);
         tile.Color = newColor;
 
