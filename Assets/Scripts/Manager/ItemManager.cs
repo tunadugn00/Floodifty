@@ -76,6 +76,17 @@ public class ItemManager : MonoBehaviour
         }
         return false;
     }
+
+    public void GrantHintFromRewardedAd()
+    {
+        hintCount++;
+        SaveInventory();
+    }
+    public void GrantHammerFromRewardedAd()
+    {
+        hammerCount++;
+        SaveInventory();
+    }
     public int GetHintCount() => hintCount;
     public bool HasHint() => hintCount > 0;
     public int GetHintPrice() => hintPrice;
@@ -129,6 +140,12 @@ public class ItemManager : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void GrantColorBombFromRewardedAd()
+    {
+        colorBombCount++;
+        SaveInventory();
     }
 
     public int GetColorBombCount() => colorBombCount;

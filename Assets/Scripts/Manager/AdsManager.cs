@@ -19,13 +19,13 @@ public class AdsManager : MonoBehaviour
     private string _rewardedId = "unused";
 #endif
 
-    // Các đối tượng quảng cáo
     private BannerView _bannerView;
     private InterstitialAd _interstitialAd;
     private RewardedAd _rewardedAd;
 
-    //Callback cho quảng cáo có thưởng
     public static Action OnUserEarnedReward;
+
+    private Action _onRewardedGranted;
 
     private void Awake()
     {
@@ -42,7 +42,6 @@ public class AdsManager : MonoBehaviour
 
     void Start()
     {
-        //Khởi tạo AdMob SDK
         MobileAds.Initialize((InitializationStatus status) =>
         {
             LoadBannerAd();
@@ -54,9 +53,7 @@ public class AdsManager : MonoBehaviour
     #region --- Banner Ads ----
     public void LoadBannerAd()
     {
-        //Tạo request
         AdRequest request = new AdRequest();
-        //Tạo banner
         _bannerView = new BannerView(_bannerId, AdSize.Banner, AdPosition.Bottom);
         _bannerView.LoadAd(request);
         _bannerView.Show();
@@ -74,8 +71,6 @@ public class AdsManager : MonoBehaviour
     public void LoadInterstitialAd()
     {
         AdRequest request = new AdRequest();
-
-        //tải ads
         InterstitialAd.Load(_interstitialId, request, (InterstitialAd ad, LoadAdError error) =>
         {
             if( error != null || ad == null)
@@ -116,6 +111,11 @@ public class AdsManager : MonoBehaviour
     #endregion
 
     #region --- Rewarded Ads ---
+    public bool CanShowRewardedAd()
+    {
+        return _rewardedAd != null && _rewardedAd.CanShowAd();
+    }
+
     public void LoadRewardedAd()
     {
         AdRequest request = new AdRequest();
@@ -126,39 +126,51 @@ public class AdsManager : MonoBehaviour
             {
                 return;
             }
-
             _rewardedAd = ad;
 
-            // Đăng ký sự kiện
             RegisterRewardedEvents(ad);
         });
     }
 
     public void ShowRewardedAd()
     {
+        ShowRewardedAd(null);
+    }
+
+    public void ShowRewardedAd(Action onRewardGranted)
+    {
+        _onRewardedGranted = onRewardGranted;
+
         if (_rewardedAd != null && _rewardedAd.CanShowAd())
         {
             _rewardedAd.Show((Reward reward) =>
             {
-                //trả thưởng
-                OnUserEarnedReward?.Invoke();
+                if (_onRewardedGranted != null)
+                {
+                    var cb = _onRewardedGranted;
+                    _onRewardedGranted = null;
+                    cb.Invoke();
+                }
+                else
+                {
+                    OnUserEarnedReward?.Invoke();
+                }
             });
         }
         else
         {
+            _onRewardedGranted = null;
             LoadRewardedAd();
+            SoundManager.VibrateIfEnabled();
         }
     }
     private void RegisterRewardedEvents(RewardedAd ad)
     {
-        //Khi ads bị đóng
         ad.OnAdFullScreenContentClosed += () =>
         {
             _rewardedAd.Destroy();
             LoadRewardedAd();
         };
-
-        //khi lỗi show
         ad.OnAdFullScreenContentFailed += (AdError error) =>
         {
             _rewardedAd.Destroy();

@@ -117,7 +117,7 @@ public class BoardManager : MonoBehaviour
         }
 
         hudController?.UpdateItemCounts();
-        SoundManager.Instance?.PlayClick();
+        SoundManager.Instance?.PlayHammer();
     }
 
     private Tile.TileColor GetDominantNeighborColor(int r, int c)
@@ -324,16 +324,12 @@ public class BoardManager : MonoBehaviour
     {
         if (isUIBlocking) return;
         if (!GameManager.Instance.IsGameActive()) return;
-
-        // Nếu đang "arm" Hammer thì click tiếp theo sẽ ưu tiên phá đá (không flood-fill)
         if (hammerArmed)
         {
             UseHammerOnTile(r, c);
             hammerArmed = false;
             return;
         }
-
-        // Nếu đang "arm" Color Bomb: click 1 tile A để chuyển toàn bộ A -> selectedColor (B)
         if (colorBombArmed)
         {
             UseColorBombOnTile(r, c);
@@ -368,8 +364,8 @@ public class BoardManager : MonoBehaviour
             return;
         }
 
-        Tile.TileColor fromColor = tile.Color;   // A
-        Tile.TileColor toColor = selectedColor;  // B
+        Tile.TileColor fromColor = tile.Color;  
+        Tile.TileColor toColor = selectedColor; 
 
         if (fromColor == toColor)
         {
@@ -385,7 +381,7 @@ public class BoardManager : MonoBehaviour
         }
 
         hudController?.UpdateItemCounts();
-        SoundManager.Instance?.PlayFillClick();
+        SoundManager.Instance?.PlayColorBomb();
         StartCoroutine(RunColorBomb(fromColor, toColor));
     }
 

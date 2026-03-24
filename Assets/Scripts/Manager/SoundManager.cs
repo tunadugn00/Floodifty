@@ -15,6 +15,12 @@ public class SoundManager : MonoBehaviour
     public AudioClip loseClip;
     public AudioClip coinClip;
 
+    public AudioClip hintClip;
+    public AudioClip hammerClip;
+    public AudioClip colorBombClip;
+    public AudioClip shopPurchaseClip;
+    public AudioClip adRewardClip;
+
     private void Awake()
     {
         if(Instance == null)
@@ -34,6 +40,17 @@ public class SoundManager : MonoBehaviour
     public void PlayLose() => PlaySFX(loseClip);
     public void PlayCoin() => PlaySFX(coinClip);
 
+    public void PlayHint() => PlaySFXOrFallbackClick(hintClip);
+    public void PlayHammer() => PlaySFXOrFallbackClick(hammerClip);
+    public void PlayColorBomb() => PlaySFXOrFallbackClick(colorBombClip);
+    public void PlayShopPurchase() => PlaySFXOrFallbackClick(shopPurchaseClip);
+    public void PlayAdReward() => PlaySFXOrFallbackClick(adRewardClip);
+
+    private void PlaySFXOrFallbackClick(AudioClip clip)
+    {
+        if (clip != null) PlaySFX(clip);
+        else PlayClick();
+    }
 
     public void PlaySFX(AudioClip clip)
     {

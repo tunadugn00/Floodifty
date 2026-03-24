@@ -16,16 +16,13 @@ public class ItemButtonController : MonoBehaviour
 
     private void Start()
     {
-        // Đảm bảo vào scene ban đầu không có gì đang highlight
         UpdateColorBombVisual(false);
     }
 
-    // 1. Nút Hint – dùng flow cũ, nhưng gói lại
     public void OnHintButtonClicked()
     {
         if (hintManager == null || ItemManager.Instance == null) return;
 
-        // Nếu hết Hint -> mở shop
         if (!ItemManager.Instance.HasHint())
         {
             if (shopController != null)
@@ -36,15 +33,14 @@ public class ItemButtonController : MonoBehaviour
             return;
         }
 
-        // Còn Hint -> dùng 1 cái và cho HintManager chạy logic MCTS
         bool success = ItemManager.Instance.UseHint();
         if (!success) return;
 
         hudController?.UpdateItemCounts();
+        SoundManager.Instance?.PlayHint();
         hintManager.StartHint();
     }
 
-    // 2. Nút Hammer – tạm thời mới xử lý “mua hoặc mở shop”
     public void OnHammerButtonClicked()
     {
         if (ItemManager.Instance == null || boardManager == null) return;
@@ -62,7 +58,6 @@ public class ItemButtonController : MonoBehaviour
         boardManager.ArmHammer();
     }
 
-    // 3. Nút Color Bomb – tương tự Hammer, để TODO
     public void OnColorBombButtonClicked()
     {
         if (ItemManager.Instance == null || boardManager == null) return;
@@ -77,7 +72,6 @@ public class ItemButtonController : MonoBehaviour
             return;
         }
 
-        // Toggle trạng thái armed
         if (!isColorBombArmed)
         {
             boardManager.ArmColorBomb();
@@ -119,7 +113,6 @@ public class ItemButtonController : MonoBehaviour
 
         if (colorBombHintGroup != null)
         {
-            // Đảm bảo GameObject luôn active, chỉ ẩn/hiện bằng alpha
             if (!colorBombHintGroup.gameObject.activeSelf)
                 colorBombHintGroup.gameObject.SetActive(true);
 

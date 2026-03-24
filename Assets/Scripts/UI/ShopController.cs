@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
 
 public class ShopController : MonoBehaviour
@@ -13,6 +14,11 @@ public class ShopController : MonoBehaviour
     [SerializeField] private Button hintBuyButton;
     [SerializeField] private Button hammerBuyButton;
     [SerializeField] private Button colorBombBuyButton;
+    
+    [Header("Watch Ad Buttons")]
+    [SerializeField] private Button hintWatchAdButton;
+    [SerializeField] private Button hammerWatchAdButton;
+    [SerializeField] private Button colorBombWatchAdButton;
 
     [Header("Price Texts")]
     [SerializeField] private TextMeshProUGUI hintPriceText;
@@ -30,18 +36,60 @@ public class ShopController : MonoBehaviour
 
     void Awake()
     {
-        // Setup buttons trong Awake - chạy kể cả khi shopPanel đang SetActive(false)
         if (hintBuyButton != null)
-            hintBuyButton.onClick.AddListener(OnBuyHint);
+        {
+            if (!HasPersistentListener(hintBuyButton.onClick, nameof(OnBuyHint)))
+                hintBuyButton.onClick.AddListener(OnBuyHint);
+        }
+
+        if (hintWatchAdButton != null)
+        {
+            if (!HasPersistentListener(hintWatchAdButton.onClick, nameof(OnWatchAdForHint)))
+                hintWatchAdButton.onClick.AddListener(OnWatchAdForHint);
+        }
 
         if (hammerBuyButton != null)
-            hammerBuyButton.onClick.AddListener(OnBuyHammer);
+        {
+            if (!HasPersistentListener(hammerBuyButton.onClick, nameof(OnBuyHammer)))
+                hammerBuyButton.onClick.AddListener(OnBuyHammer);
+        }
 
         if (colorBombBuyButton != null)
-            colorBombBuyButton.onClick.AddListener(OnBuyColorBomb);
+        {
+            if (!HasPersistentListener(colorBombBuyButton.onClick, nameof(OnBuyColorBomb)))
+                colorBombBuyButton.onClick.AddListener(OnBuyColorBomb);
+        }
+
+        if (hammerWatchAdButton != null)
+        {
+            if (!HasPersistentListener(hammerWatchAdButton.onClick, nameof(OnWatchAdForHammer)))
+                hammerWatchAdButton.onClick.AddListener(OnWatchAdForHammer);
+        }
+
+        if (colorBombWatchAdButton != null)
+        {
+            if (!HasPersistentListener(colorBombWatchAdButton.onClick, nameof(OnWatchAdForColorBomb)))
+                colorBombWatchAdButton.onClick.AddListener(OnWatchAdForColorBomb);
+        }
 
         if (closeButton != null)
-            closeButton.onClick.AddListener(CloseShop);
+        {
+            if (!HasPersistentListener(closeButton.onClick, nameof(CloseShop)))
+                closeButton.onClick.AddListener(CloseShop);
+        }
+    }
+
+    private static bool HasPersistentListener(UnityEvent unityEvent, string methodName)
+    {
+        if (unityEvent == null) return false;
+
+        int count = unityEvent.GetPersistentEventCount();
+        for (int i = 0; i < count; i++)
+        {
+            if (unityEvent.GetPersistentMethodName(i) == methodName)
+                return true;
+        }
+        return false;
     }
 
     void Start()
@@ -61,13 +109,10 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    // ===== OPEN/CLOSE - KHÔNG PAUSE! =====
 
     public void OpenShop()
     {
         if (shopPanel == null || shopWindow == null) return;
-
-        // KHÔNG pause game! Chỉ block clicks!
 
         shopPanel.gameObject.SetActive(true);
 
@@ -77,15 +122,12 @@ public class ShopController : MonoBehaviour
         shopPanel.blocksRaycasts = true;
         shopPanel.interactable = true;
 
-        // Block board input để tránh click xuyên qua shop
         boardManager?.SetUIBlocking(true);
 
-        // Animation bình thường
         shopPanel.DOFade(1f, 0.3f);
         shopWindow.DOScale(1f, 0.5f)
             .SetEase(Ease.OutBack);
 
-        // Luôn refresh giá + trạng thái mỗi lần mở
         UpdatePrices();
         UpdateButtonStates();
 
@@ -117,53 +159,146 @@ public class ShopController : MonoBehaviour
     public void OnBuyHint()
     {
         if (ItemManager.Instance == null) { return; }
+        if (hintBuyButton != null) hintBuyButton.interactable = false;
 
-        if (ItemManager.Instance.BuyHint())
+        try
         {
-            OnPurchaseSuccess("Hint");
+            if (ItemManager.Instance.BuyHint())
+            {
+                OnPurchaseSuccess("Hint");
+                hudController?.UpdateItemCounts();
+            }
+            else
+            {
+                OnPurchaseFailed();
+            }
+        }
+        finally
+        {
+            if (hintBuyButton != null) hintBuyButton.interactable = true;
+        }
+    }
+
+    public void OnWatchAdForHint()
+    {
+        if (AdsManager.Instance == null || ItemManager.Instance == null) return;
+        if (hintWatchAdButton != null) hintWatchAdButton.interactable = false;
+
+        SoundManager.Instance?.PlayClick();
+        if (!AdsManager.Instance.CanShowRewardedAd())
+        {
+            AdsManager.Instance.LoadRewardedAd();
+            if (hintWatchAdButton != null) hintWatchAdButton.interactable = true;
+            return;
+        }
+
+        AdsManager.Instance.ShowRewardedAd(() =>
+        {
+            ItemManager.Instance.GrantHintFromRewardedAd();
             hudController?.UpdateItemCounts();
-        }
-        else
-        {
-            OnPurchaseFailed();
-        }
+            SoundManager.Instance?.PlayAdReward();
+            UpdateButtonStates();
+            if (hintWatchAdButton != null) hintWatchAdButton.interactable = true;
+        });
     }
 
     public void OnBuyHammer()
     {
         if (ItemManager.Instance == null) { return; }
+        if (hammerBuyButton != null) hammerBuyButton.interactable = false;
 
-        if (ItemManager.Instance.BuyHammer())
+        try
         {
-            OnPurchaseSuccess("Hammer");
-            hudController?.UpdateItemCounts();
+            if (ItemManager.Instance.BuyHammer())
+            {
+                OnPurchaseSuccess("Hammer");
+                hudController?.UpdateItemCounts();
+            }
+            else
+            {
+                OnPurchaseFailed();
+            }
         }
-        else
+        finally
         {
-            OnPurchaseFailed();
+            if (hammerBuyButton != null) hammerBuyButton.interactable = true;
         }
     }
 
     public void OnBuyColorBomb()
     {
         if (ItemManager.Instance == null) { return; }
+        if (colorBombBuyButton != null) colorBombBuyButton.interactable = false;
 
-        if (ItemManager.Instance.BuyColorBomb())
+        try
         {
-            OnPurchaseSuccess("Color Bomb");
+            if (ItemManager.Instance.BuyColorBomb())
+            {
+                OnPurchaseSuccess("Color Bomb");
+                hudController?.UpdateItemCounts();
+            }
+            else
+            {
+                OnPurchaseFailed();
+            }
+        }
+        finally
+        {
+            if (colorBombBuyButton != null) colorBombBuyButton.interactable = true;
+        }
+    }
+
+    public void OnWatchAdForHammer()
+    {
+        if (AdsManager.Instance == null || ItemManager.Instance == null) return;
+        if (hammerWatchAdButton != null) hammerWatchAdButton.interactable = false;
+
+        SoundManager.Instance?.PlayClick();
+        if (!AdsManager.Instance.CanShowRewardedAd())
+        {
+            AdsManager.Instance.LoadRewardedAd();
+            if (hammerWatchAdButton != null) hammerWatchAdButton.interactable = true;
+            return;
+        }
+
+        AdsManager.Instance.ShowRewardedAd(() =>
+        {
+            ItemManager.Instance.GrantHammerFromRewardedAd();
             hudController?.UpdateItemCounts();
-        }
-        else
+            SoundManager.Instance?.PlayAdReward();
+            UpdateButtonStates();
+            if (hammerWatchAdButton != null) hammerWatchAdButton.interactable = true;
+        });
+    }
+
+    public void OnWatchAdForColorBomb()
+    {
+        if (AdsManager.Instance == null || ItemManager.Instance == null) return;
+        if (colorBombWatchAdButton != null) colorBombWatchAdButton.interactable = false;
+
+        SoundManager.Instance?.PlayClick();
+        if (!AdsManager.Instance.CanShowRewardedAd())
         {
-            OnPurchaseFailed();
+            AdsManager.Instance.LoadRewardedAd();
+            if (colorBombWatchAdButton != null) colorBombWatchAdButton.interactable = true;
+            return;
         }
+
+        AdsManager.Instance.ShowRewardedAd(() =>
+        {
+            ItemManager.Instance.GrantColorBombFromRewardedAd();
+            hudController?.UpdateItemCounts();
+            SoundManager.Instance?.PlayAdReward();
+            UpdateButtonStates();
+            if (colorBombWatchAdButton != null) colorBombWatchAdButton.interactable = true;
+        });
     }
 
     // ===== PURCHASE FEEDBACK =====
 
     private void OnPurchaseSuccess(string itemName)
     {
-        SoundManager.Instance?.PlayClick();
+        SoundManager.Instance?.PlayShopPurchase();
         UpdateButtonStates();
     }
 
@@ -203,22 +338,37 @@ public class ShopController : MonoBehaviour
         // Hint button
         UpdateButtonState(hintBuyButton, currentCoins >= ItemManager.Instance.GetHintPrice());
 
+        if (hintWatchAdButton != null)
+        {
+            bool show = AdsManager.Instance != null
+                        && currentCoins < ItemManager.Instance.GetHintPrice();
+            hintWatchAdButton.gameObject.SetActive(show);
+        }
+
         // Hammer button
         UpdateButtonState(hammerBuyButton, currentCoins >= ItemManager.Instance.GetHammerPrice());
+        if (hammerWatchAdButton != null)
+        {
+            bool show = AdsManager.Instance != null
+                        && currentCoins < ItemManager.Instance.GetHammerPrice();
+            hammerWatchAdButton.gameObject.SetActive(show);
+        }
 
         // Color Bomb button
         UpdateButtonState(colorBombBuyButton, currentCoins >= ItemManager.Instance.GetColorBombPrice());
+        if (colorBombWatchAdButton != null)
+        {
+            bool show = AdsManager.Instance != null
+                        && currentCoins < ItemManager.Instance.GetColorBombPrice();
+            colorBombWatchAdButton.gameObject.SetActive(show);
+        }
     }
 
     private void UpdateButtonState(Button button, bool canBuy)
     {
         if (button == null) return;
-
-        // Luôn cho phép click để khi thiếu tiền vẫn có feedback (rung/shake).
-        // Việc mua thành công/ thất bại được quyết định trong OnBuyXXX() (ItemManager.BuyXXX()).
         button.interactable = true;
 
-        // Change color
         var colors = button.colors;
         colors.normalColor = canBuy ? canBuyColor : cannotBuyColor;
         colors.disabledColor = cannotBuyColor;

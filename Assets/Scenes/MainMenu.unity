@@ -3707,7 +3707,12 @@ MonoBehaviour:
   fillClip: {fileID: 8300000, guid: ef03db304b5d11c4d9d5729245dfeb54, type: 3}
   winClip: {fileID: 8300000, guid: 9b460b62e12c1a94b8d8156e144948fe, type: 3}
   loseClip: {fileID: 8300000, guid: 7ad11fbbd7cedcd4aa3c19883d4e18ad, type: 3}
-  coinClip: {fileID: 0}
+  coinClip: {fileID: 8300000, guid: a74dcf500feb8e543aca0b84c3e23a79, type: 3}
+  hintClip: {fileID: 0}
+  hammerClip: {fileID: 8300000, guid: 5d556ec9a7232e746b70f9cf56777f9d, type: 3}
+  colorBombClip: {fileID: 0}
+  shopPurchaseClip: {fileID: 0}
+  adRewardClip: {fileID: 0}
 --- !u!4 &1642255678
 Transform:
   m_ObjectHideFlags: 0
