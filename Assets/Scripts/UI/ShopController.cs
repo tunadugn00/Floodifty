@@ -112,6 +112,12 @@ public class ShopController : MonoBehaviour
 
     public void OpenShop()
     {
+        if (IsTutorialLevelOne())
+        {
+            SoundManager.VibrateIfEnabled();
+            return;
+        }
+
         if (shopPanel == null || shopWindow == null) return;
 
         shopPanel.gameObject.SetActive(true);
@@ -132,6 +138,12 @@ public class ShopController : MonoBehaviour
         UpdateButtonStates();
 
         SoundManager.Instance?.PlayClick();
+    }
+
+    private static bool IsTutorialLevelOne()
+    {
+        if (GameManager.Instance == null || GameManager.Instance.isEndlessMode) return false;
+        return PlayerPrefs.GetInt("SelectedLevel", 1) == 1;
     }
 
     public void CloseShop()

@@ -32,6 +32,12 @@ public class BoardManager : MonoBehaviour
     private bool isUIBlocking = false;
     public void SetUIBlocking(bool blocking) { isUIBlocking = blocking; }
 
+    public event System.Action OnHammerUsed;
+    public event System.Action OnColorBombUsed;
+    public event System.Action OnTileClickedEvent;
+    public event System.Action OnHammerArmed;
+    public event System.Action OnColorBombArmed;
+
     private bool hammerArmed = false;
     private bool colorBombArmed = false;
 
@@ -42,6 +48,7 @@ public class BoardManager : MonoBehaviour
             hammerArmed = true;
             colorBombArmed = false;
             SoundManager.Instance?.PlayClick();
+            OnHammerArmed?.Invoke();
         }
         else
         {
@@ -61,6 +68,7 @@ public class BoardManager : MonoBehaviour
             colorBombArmed = true;
             hammerArmed = false;
             SoundManager.Instance?.PlayClick();
+            OnColorBombArmed?.Invoke();
         }
         else
         {
@@ -72,7 +80,7 @@ public class BoardManager : MonoBehaviour
     {
         colorBombArmed = false;
     }
-    
+
     public void UseHammerOnTile(int r, int c)
     {
         if (!GameManager.Instance.IsGameActive()) return;
@@ -94,7 +102,6 @@ public class BoardManager : MonoBehaviour
             return;
         }
 
-        // Spawn rock break FX
         if (floodAnimator != null && floodAnimator.rockParticlePrefab != null)
         {
             var fx = Instantiate(
@@ -102,8 +109,6 @@ public class BoardManager : MonoBehaviour
                 tile.transform.position,
                 Quaternion.identity
             );
-
-            // Ensure FX doesn't leak (prefab should be non-looping)
             Destroy(fx, 1.5f);
         }
 
@@ -118,6 +123,7 @@ public class BoardManager : MonoBehaviour
 
         hudController?.UpdateItemCounts();
         SoundManager.Instance?.PlayHammer();
+        OnHammerUsed?.Invoke();
     }
 
     private Tile.TileColor GetDominantNeighborColor(int r, int c)
@@ -364,8 +370,8 @@ public class BoardManager : MonoBehaviour
             return;
         }
 
-        Tile.TileColor fromColor = tile.Color;  
-        Tile.TileColor toColor = selectedColor; 
+        Tile.TileColor fromColor = tile.Color;
+        Tile.TileColor toColor = selectedColor;
 
         if (fromColor == toColor)
         {
@@ -382,6 +388,7 @@ public class BoardManager : MonoBehaviour
 
         hudController?.UpdateItemCounts();
         SoundManager.Instance?.PlayColorBomb();
+        OnColorBombUsed?.Invoke();
         StartCoroutine(RunColorBomb(fromColor, toColor));
     }
 
@@ -404,6 +411,7 @@ public class BoardManager : MonoBehaviour
         movesLeft--;
         actualMovesUsed++;
         hudController?.SetMove(movesLeft);
+        OnTileClickedEvent?.Invoke();
 
         yield return StartCoroutine(floodAnimator.AnimateFloodFill(r, c, originalColor, replacementColor));
 

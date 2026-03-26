@@ -25,11 +25,7 @@ public class ItemButtonController : MonoBehaviour
 
         if (!ItemManager.Instance.HasHint())
         {
-            if (shopController != null)
-            {
-                shopController.OpenShop();
-                SoundManager.Instance?.PlayClick();
-            }
+            TryOpenShopWhenOutOfItem();
             return;
         }
 
@@ -47,11 +43,7 @@ public class ItemButtonController : MonoBehaviour
 
         if (!ItemManager.Instance.HasHammer())
         {
-            if (shopController != null)
-            {
-                shopController.OpenShop();
-                SoundManager.Instance?.PlayClick();
-            }
+            TryOpenShopWhenOutOfItem();
             return;
         }
 
@@ -64,11 +56,7 @@ public class ItemButtonController : MonoBehaviour
 
         if (!ItemManager.Instance.HasColorBomb())
         {
-            if (shopController != null)
-            {
-                shopController.OpenShop();
-                SoundManager.Instance?.PlayClick();
-            }
+            TryOpenShopWhenOutOfItem();
             return;
         }
 
@@ -123,6 +111,27 @@ public class ItemButtonController : MonoBehaviour
             colorBombHintGroup.interactable = false;
             colorBombHintGroup.blocksRaycasts = false;
         }
+    }
+
+    private void TryOpenShopWhenOutOfItem()
+    {
+        if (IsTutorialLevelOne())
+        {
+            SoundManager.VibrateIfEnabled();
+            return;
+        }
+
+        if (shopController != null)
+        {
+            shopController.OpenShop();
+            SoundManager.Instance?.PlayClick();
+        }
+    }
+
+    private static bool IsTutorialLevelOne()
+    {
+        if (GameManager.Instance == null || GameManager.Instance.isEndlessMode) return false;
+        return PlayerPrefs.GetInt("SelectedLevel", 1) == 1;
     }
 
 }

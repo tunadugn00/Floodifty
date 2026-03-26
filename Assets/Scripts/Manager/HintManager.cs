@@ -1,12 +1,32 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
 public class HintManager : MonoBehaviour
 {
+    [System.Serializable]
+    private class TutorialHintStep
+    {
+        public int row;
+        public int col;
+        public Tile.TileColor suggestedColor;
+    }
+
     public BoardManager boardManager;
     public HUDController hudController;
     private bool isHinting = false;
+
+    [Header("Tutorial Hint")]
+    [SerializeField] private bool useTutorialHintsForLevelOne = true;
+    [SerializeField] private List<TutorialHintStep> tutorialHintSteps = new List<TutorialHintStep>();
+
+    private int tutorialHintIndex = 0;
+
+    private void OnEnable()
+    {
+        tutorialHintIndex = 0;
+    }
 
     public void StartHint()
     {
@@ -27,7 +47,7 @@ public class HintManager : MonoBehaviour
             ? boardManager.currentLevel.targetColor
             : boardManager.GetGoalColor();
 
-        var (hintRow, hintCol, hintColor) = MCTSHintSolver.GetHint(tiles, rows, cols, targetColor);
+        var (hintRow, hintCol, hintColor) = ResolveHint(tiles, rows, cols, targetColor);
 
         if (hintRow < 0 || hintCol < 0)
         {
@@ -101,6 +121,55 @@ public class HintManager : MonoBehaviour
         HighlightUIButton(hintColor);
 
         isHinting = false;
+    }
+
+    private (int row, int col, Tile.TileColor color) ResolveHint(
+        Tile[,] tiles,
+        int rows,
+        int cols,
+        Tile.TileColor targetColor)
+    {
+        if (ShouldUseTutorialHint())
+        {
+            var tutorialHint = TryGetTutorialHint(tiles, rows, cols);
+            if (tutorialHint.row >= 0)
+            {
+                return tutorialHint;
+            }
+        }
+
+        return MCTSHintSolver.GetHint(tiles, rows, cols, targetColor);
+    }
+
+    private bool ShouldUseTutorialHint()
+    {
+        if (!useTutorialHintsForLevelOne) return false;
+        if (GameManager.Instance == null || GameManager.Instance.isEndlessMode) return false;
+        return PlayerPrefs.GetInt("SelectedLevel", 1) == 1;
+    }
+
+    private (int row, int col, Tile.TileColor color) TryGetTutorialHint(Tile[,] tiles, int rows, int cols)
+    {
+        if (tutorialHintSteps == null || tutorialHintSteps.Count == 0)
+        {
+            return (-1, -1, Tile.TileColor.Red);
+        }
+
+        while (tutorialHintIndex < tutorialHintSteps.Count)
+        {
+            var step = tutorialHintSteps[tutorialHintIndex];
+            tutorialHintIndex++;
+
+            if (step == null) continue;
+            if (step.row < 0 || step.row >= rows || step.col < 0 || step.col >= cols) continue;
+
+            var tile = tiles[step.row, step.col];
+            if (tile == null || tile.isRock) continue;
+
+            return (step.row, step.col, step.suggestedColor);
+        }
+
+        return (-1, -1, Tile.TileColor.Red);
     }
 
     private IEnumerator PreviewFloodFill(Tile[,] tiles, int startR, int startC, Tile.TileColor fromColor, Tile.TileColor toColor)
