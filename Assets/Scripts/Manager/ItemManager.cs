@@ -20,6 +20,11 @@ public class ItemManager : MonoBehaviour
     private int hammerCount;
     private int colorBombCount;
 
+    private bool isTutorialMode = false;
+    private int backupHints;
+    private int backupHammers;
+    private int backupBombs;
+
     private void Awake()
     {
         if(Instance != null && Instance != this)
@@ -51,6 +56,8 @@ public class ItemManager : MonoBehaviour
     }
     private void SaveInventory()
     {
+        if (isTutorialMode) return;
+
         PlayerPrefs.SetInt(HINT_COUNT_KEY, hintCount);
         PlayerPrefs.SetInt(HAMMER_COUNT_KEY, hammerCount);
         PlayerPrefs.SetInt(BOMB_COUNT_KEY, colorBombCount);
@@ -151,5 +158,28 @@ public class ItemManager : MonoBehaviour
     public int GetColorBombCount() => colorBombCount;
     public bool HasColorBomb() => colorBombCount > 0;
     public int GetColorBombPrice() => colorBombPrice;
+
+    public void StartTutorialMode()
+    {
+        isTutorialMode = true;
+        backupHints = hintCount;
+        backupHammers = hammerCount;
+        backupBombs = colorBombCount;
+
+        hintCount = 1;
+        hammerCount = 1;
+        colorBombCount = 1;
+    }
+
+    public void EndTutorialMode()
+    {
+        isTutorialMode = false;
+
+        hintCount = backupHints;
+        hammerCount = backupHammers;
+        colorBombCount = backupBombs;
+
+        SaveInventory(); 
+    }
 
 }

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -30,7 +30,6 @@ public class TutorialManager : MonoBehaviour
     public CanvasGroup darkOverlay;
     public TextMeshProUGUI instructionText;
     public RectTransform instructionBox;
-    public GameObject tapToContinueObj;
     public RectTransform highlightFrame;
 
     [Header("Settings")]
@@ -52,6 +51,8 @@ public class TutorialManager : MonoBehaviour
             if (tutorialLayer != null) tutorialLayer.SetActive(false);
             return;
         }
+        ItemManager.Instance.StartTutorialMode();
+        boardManager.hudController?.UpdateItemCounts();
 
         HideAllUI();
         StartCoroutine(RunTutorial());
@@ -71,6 +72,10 @@ public class TutorialManager : MonoBehaviour
 
         HideAllUI();
         boardManager.SetUIBlocking(false);
+
+        ItemManager.Instance.EndTutorialMode();
+        boardManager.hudController?.UpdateItemCounts();
+
         PlayerPrefs.SetInt(PREF_KEY, 1);
         PlayerPrefs.Save();
         if (tutorialLayer != null) tutorialLayer.SetActive(false);
@@ -97,20 +102,17 @@ public class TutorialManager : MonoBehaviour
     private IEnumerator StepStart()
     {
         ShowOverlay();
-        ShowInstruction("Fill toàn bộ ô thành màu mục tiêu!\nTap để tiếp tục.");
-        ShowTapToContinue(true);
+        ShowInstruction("Fill all tiles with the target color!\n     Tap to continue.");
         HideHighlight();
 
         yield return WaitForScreenTap();
-        ShowTapToContinue(false);
         NextStep();
     }
 
     private IEnumerator StepHint()
     {
-        ShowInstruction("Dùng Hint để xem gợi ý bước đi tốt nhất!");
-        ShowHighlight(hintButton?.GetComponent<RectTransform>());
-        ShowTapToContinue(false);
+        ShowInstruction("Use Hint to see the best move!");
+        ShowHighlight(hintButton?.GetComponent<RectTransform>(), new Vector2(200, 150));
 
         boardManager.SetUIBlocking(false);
         yield return WaitForButtonTap(hintButton);
@@ -126,13 +128,13 @@ public class TutorialManager : MonoBehaviour
         Tile.TileColor fillColor = GetSuggestedColor();
         RectTransform colorBtnRect = GetColorButtonRect(fillColor);
 
-        ShowInstruction("Chọn màu này để fill!");
-        ShowHighlight(colorBtnRect);
+        ShowInstruction("Select this color to fill!");
+        ShowHighlight(colorBtnRect, new Vector2(300, 200));
 
         boardManager.SetUIBlocking(false);
         yield return WaitForColorButtonTap(fillColor);
 
-        ShowInstruction("Tap vào board để fill!");
+        ShowInstruction("Tap the board to fill!");
         HideHighlight();
 
         bool tileTapped = false;
@@ -149,8 +151,8 @@ public class TutorialManager : MonoBehaviour
 
     private IEnumerator StepHammer()
     {
-        ShowInstruction("Dùng Hammer để phá ô đá!");
-        ShowHighlight(hammerButton?.GetComponent<RectTransform>());
+        ShowInstruction("Use Hammer to break the rock!");
+        ShowHighlight(hammerButton?.GetComponent<RectTransform>(), new Vector2(200, 150));
 
         bool hammerArmed = false;
         void OnHammerArmed() => hammerArmed = true;
@@ -161,8 +163,21 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => hammerArmed);
         boardManager.OnHammerArmed -= OnHammerArmed;
 
-        ShowInstruction("Tap vào ô đá để phá!");
-        HideHighlight();
+        ShowInstruction("Tap the rock to break it!");
+
+        Tile[,] tiles = boardManager.GetTiles();
+        int rockR = -1, rockC = -1;
+        for (int r = 0; r < tiles.GetLength(0); r++)
+        {
+            for (int c = 0; c < tiles.GetLength(1); c++)
+            {
+                if (tiles[r, c].isRock)
+                {
+                    rockR = r; rockC = c; break;
+                }
+            }
+        }
+        if (rockR != -1) ShowHighlightOnTile(rockR, rockC, new Vector2(200, 150));
 
         bool hammerDone = false;
         void OnHammerUsed() => hammerDone = true;
@@ -178,20 +193,43 @@ public class TutorialManager : MonoBehaviour
 
     private IEnumerator StepBomb()
     {
-        ShowInstruction("Color Bomb đổi toàn bộ một màu thành màu đang chọn!");
-        ShowHighlight(colorBombButton?.GetComponent<RectTransform>());
+        ShowInstruction("Color Bomb changes all tiles of one color!");
+        ShowHighlight(colorBombButton?.GetComponent<RectTransform>(), new Vector2(200, 150));
 
         bool bombArmed = false;
         void OnBombArmed() => bombArmed = true;
         boardManager.OnColorBombArmed += OnBombArmed;
 
         boardManager.SetUIBlocking(false);
-
         yield return new WaitUntil(() => bombArmed);
         boardManager.OnColorBombArmed -= OnBombArmed;
 
-        ShowInstruction("Tap vào board để kích hoạt Bomb!");
-        HideHighlight();
+        Tile.TileColor bombColor = GetNonGoalColor();
+        RectTransform colorBtnRect = GetColorButtonRect(bombColor);
+
+        ShowInstruction("Select a color first!");
+        ShowHighlight(colorBtnRect, new Vector2(300, 200));
+
+        yield return WaitForColorButtonTap(bombColor);
+
+        ShowInstruction("Now tap a tile on the board to activate!");
+
+        Tile[,] tiles = boardManager.GetTiles();
+        Tile.TileColor goalColor = boardManager.GetGoalColor();
+        int targetR = 0, targetC = 0;
+
+        for (int r = 0; r < tiles.GetLength(0); r++)
+        {
+            for (int c = 0; c < tiles.GetLength(1); c++)
+            {
+                if (!tiles[r, c].isRock && tiles[r, c].Color != bombColor && tiles[r, c].Color != goalColor)
+                {
+                    targetR = r; targetC = c;
+                    break;
+                }
+            }
+        }
+        ShowHighlightOnTile(targetR, targetC, new Vector2(200, 150));
 
         bool bombDone = false;
         void OnBombUsed() => bombDone = true;
@@ -203,6 +241,17 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
         NextStep();
+    }
+
+    private Tile.TileColor GetNonGoalColor()
+    {
+        Tile.TileColor goal = boardManager.GetGoalColor();
+        foreach (var btn in boardManager.colorButtons)
+        {
+            if (btn != null && (Tile.TileColor)btn.colorType != goal)
+                return (Tile.TileColor)btn.colorType;
+        }
+        return goal;
     }
 
     private void ShowOverlay()
@@ -232,13 +281,21 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-    private void ShowHighlight(RectTransform target)
+    private void ShowHighlight(RectTransform target, Vector2? customSize = null)
     {
         if (highlightFrame == null || target == null) return;
 
         highlightFrame.gameObject.SetActive(true);
         highlightFrame.position = target.position;
-        highlightFrame.sizeDelta = target.sizeDelta * 1.15f;
+
+        if (customSize.HasValue)
+        {
+            highlightFrame.sizeDelta = customSize.Value;
+        }
+        else
+        {
+            highlightFrame.sizeDelta = target.sizeDelta;
+        }
 
         highlightFrame.DOKill();
         highlightFrame.localScale = Vector3.one;
@@ -247,16 +304,34 @@ public class TutorialManager : MonoBehaviour
             .SetEase(Ease.InOutSine);
     }
 
+    private void ShowHighlightOnTile(int row, int col, Vector2 customSize)
+    {
+        if (highlightFrame == null) return;
+
+        Tile[,] tiles = boardManager.GetTiles();
+        if (row < 0 || row >= tiles.GetLength(0) || col < 0 || col >= tiles.GetLength(1)) return;
+
+        Tile targetTile = tiles[row, col];
+        if (targetTile == null) return;
+
+        highlightFrame.gameObject.SetActive(true);
+
+        Vector2 screenPos = Camera.main.WorldToScreenPoint(targetTile.transform.position);
+        highlightFrame.position = screenPos;
+        highlightFrame.sizeDelta = customSize;
+
+        highlightFrame.DOKill();
+        highlightFrame.localScale = Vector3.one;
+        highlightFrame.DOScale(highlightPulseScale, pulseDuration)
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine);
+    }
     private void HideHighlight()
     {
         if (highlightFrame == null) return;
         highlightFrame.DOKill();
         highlightFrame.gameObject.SetActive(false);
-    }
 
-    private void ShowTapToContinue(bool show)
-    {
-        tapToContinueObj?.SetActive(show);
     }
 
     private void HideAllUI()
@@ -264,7 +339,6 @@ public class TutorialManager : MonoBehaviour
         if (darkOverlay != null) darkOverlay.gameObject.SetActive(false);
         if (instructionBox != null) instructionBox.gameObject.SetActive(false);
         HideHighlight();
-        ShowTapToContinue(false);
     }
 
     private IEnumerator WaitForScreenTap()
