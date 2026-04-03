@@ -42,7 +42,6 @@ public class HintManager : MonoBehaviour
         int rows = tiles.GetLength(0);
         int cols = tiles.GetLength(1);
 
-        // An toàn cho cả Normal và Endless mode
         Tile.TileColor targetColor = (boardManager.currentLevel != null)
             ? boardManager.currentLevel.targetColor
             : boardManager.GetGoalColor();
@@ -67,12 +66,10 @@ public class HintManager : MonoBehaviour
 
             DOTween.Kill(hintTile.transform);
 
-            // Tạo sequence nổi bật hơn: zoom + nháy màu rõ ràng
             var seq = DOTween.Sequence();
 
             for (int i = 0; i < 3; i++)
             {
-                // Nếu người chơi đã đổi màu ô này trong lúc hint, dừng sớm
                 if (hintTile.Color != originalColor)
                 {
                     hintTile.transform.localScale = originalScale;
@@ -108,14 +105,10 @@ public class HintManager : MonoBehaviour
                 }
             });
 
-            // Chờ sequence chạy xong
             yield return seq.WaitForCompletion();
         }
-
-        // 1) Tự chọn sẵn màu được gợi ý (UX: người chơi chỉ cần tap board)
         boardManager.OnColorSelected(hintColor);
 
-        // 1) Ghost preview flood-fill: cho người chơi thấy trước kết quả, rồi trả board về trạng thái cũ
         yield return StartCoroutine(PreviewFloodFill(tiles, hintRow, hintCol, hintTile.Color, hintColor));
 
         HighlightUIButton(hintColor);
@@ -177,7 +170,6 @@ public class HintManager : MonoBehaviour
         int rows = tiles.GetLength(0);
         int cols = tiles.GetLength(1);
 
-        // Sao lưu màu hiện tại
         var backup = new Tile.TileColor[rows, cols];
         for (int r = 0; r < rows; r++)
         {
@@ -187,7 +179,6 @@ public class HintManager : MonoBehaviour
             }
         }
 
-        // Chạy animation flood-fill thật nhưng KHÔNG trừ move, KHÔNG check win
         if (boardManager.floodAnimator != null)
         {
             yield return boardManager.StartCoroutine(
@@ -195,7 +186,6 @@ public class HintManager : MonoBehaviour
             );
         }
 
-        // Trả lại trạng thái board ban đầu
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < cols; c++)

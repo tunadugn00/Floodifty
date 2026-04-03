@@ -6,6 +6,7 @@ public class SoundManager : MonoBehaviour
 
     [Header("Audio Sources")]
     [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioSource itemsSource;
     [SerializeField] private AudioSource musicSource;
 
     [Header("Clip")]
@@ -18,8 +19,6 @@ public class SoundManager : MonoBehaviour
     public AudioClip hintClip;
     public AudioClip hammerClip;
     public AudioClip colorBombClip;
-    public AudioClip shopPurchaseClip;
-    public AudioClip adRewardClip;
 
     private void Awake()
     {
@@ -40,11 +39,9 @@ public class SoundManager : MonoBehaviour
     public void PlayLose() => PlaySFX(loseClip);
     public void PlayCoin() => PlaySFX(coinClip);
 
-    public void PlayHint() => PlaySFXOrFallbackClick(hintClip);
-    public void PlayHammer() => PlaySFXOrFallbackClick(hammerClip);
-    public void PlayColorBomb() => PlaySFXOrFallbackClick(colorBombClip);
-    public void PlayShopPurchase() => PlaySFXOrFallbackClick(shopPurchaseClip);
-    public void PlayAdReward() => PlaySFXOrFallbackClick(adRewardClip);
+    public void PlayHint() => PlaySFXItems(hintClip);
+    public void PlayHammer() => PlaySFXItems(hammerClip);
+    public void PlayColorBomb() => PlaySFXItems(colorBombClip);
 
     private void PlaySFXOrFallbackClick(AudioClip clip)
     {
@@ -57,6 +54,15 @@ public class SoundManager : MonoBehaviour
         if(clip != null && sfxSource != null && SaveSystem.IsSFXEnabled())
         {
             sfxSource.PlayOneShot(clip);
+        }
+    }
+
+    private void PlaySFXItems(AudioClip clip)
+    {
+  
+        if (clip != null && itemsSource != null && SaveSystem.IsSFXEnabled())
+        {
+            itemsSource.PlayOneShot(clip);
         }
     }
 

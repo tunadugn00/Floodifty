@@ -153,7 +153,6 @@ public class ShopController : MonoBehaviour
         shopPanel.blocksRaycasts = false;
         shopPanel.interactable = false;
 
-        // Unblock board input
         boardManager?.SetUIBlocking(false);
 
         shopPanel.DOFade(0f, 0.2f);
@@ -208,7 +207,6 @@ public class ShopController : MonoBehaviour
         {
             ItemManager.Instance.GrantHintFromRewardedAd();
             hudController?.UpdateItemCounts();
-            SoundManager.Instance?.PlayAdReward();
             UpdateButtonStates();
             if (hintWatchAdButton != null) hintWatchAdButton.interactable = true;
         });
@@ -277,7 +275,6 @@ public class ShopController : MonoBehaviour
         {
             ItemManager.Instance.GrantHammerFromRewardedAd();
             hudController?.UpdateItemCounts();
-            SoundManager.Instance?.PlayAdReward();
             UpdateButtonStates();
             if (hammerWatchAdButton != null) hammerWatchAdButton.interactable = true;
         });
@@ -300,7 +297,6 @@ public class ShopController : MonoBehaviour
         {
             ItemManager.Instance.GrantColorBombFromRewardedAd();
             hudController?.UpdateItemCounts();
-            SoundManager.Instance?.PlayAdReward();
             UpdateButtonStates();
             if (colorBombWatchAdButton != null) colorBombWatchAdButton.interactable = true;
         });
@@ -310,7 +306,6 @@ public class ShopController : MonoBehaviour
 
     private void OnPurchaseSuccess(string itemName)
     {
-        SoundManager.Instance?.PlayShopPurchase();
         UpdateButtonStates();
     }
 
