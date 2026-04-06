@@ -34,7 +34,8 @@ public class EndlessScoreManager : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        Debug.Log($"[Score] Stage {stage} | Stars={stars} | Earned={earned} | Total={sessionScore}");
+        if (LeaderboardManager.Instance != null)
+            _ = LeaderboardManager.Instance.SubmitScoreAsync(sessionScore);
         return earned;
     }
 

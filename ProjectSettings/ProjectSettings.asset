@@ -825,11 +825,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: e5034030-8dbf-414a-a5a6-54f50ac08600
+  cloudProjectId: b7c870a8-49a2-4aa5-a4ea-64a845e7dd10
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Floodify 2025-08-08_20-26-03
-  organizationId: tunadugn00
+  projectName: Floodify
+  organizationId: unity_893501989b14be6137f4
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
