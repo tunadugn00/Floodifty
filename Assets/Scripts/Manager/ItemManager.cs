@@ -182,4 +182,13 @@ public class ItemManager : MonoBehaviour
         SaveInventory(); 
     }
 
+    public void AddItems(int amount)
+    {
+        hintCount += amount;
+        hammerCount += amount;
+        colorBombCount += amount;
+        SaveInventory();
+        Debug.Log($"[IAP] +{amount} mỗi loại item");
+    }
+
 }

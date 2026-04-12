@@ -6,8 +6,17 @@ public class MenuController : MonoBehaviour
     public PopupController popup;
     public CanvasGroup settingPanel;
     public RectTransform settingWindow;
- 
-   public void PlayGameButton()
+    void Start()
+    {
+        if (!SaveSystem.IsAdsRemoved())
+            AdsManager.Instance?.ShowBannerAd();
+    }
+
+    void OnDestroy()
+    {
+        AdsManager.Instance?.HideBannerAd();
+    }
+    public void PlayGameButton()
     {
         PlayerPrefs.SetInt("GameMode", 0);
         PlayerPrefs.Save();

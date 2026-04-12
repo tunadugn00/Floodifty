@@ -8,6 +8,7 @@ public static class SaveSystem
     private const string KEY_MUSIC = "MusicEnabled";
     private const string KEY_SFX = "SFXEnabled";
     private const string KEY_VIB = "VibrationEnabled";
+    const string KEY_ADS_REMOVED = "AdsRemoved";
 
     //===== Level ======//
     public static int GetUnlockedLevel()
@@ -80,5 +81,17 @@ public static class SaveSystem
     public static bool IsVibrationEnabled()
     {
         return PlayerPrefs.GetInt(KEY_VIB, 1) == 1;
+    }
+
+    //====== Ads ======//
+    public static void SetAdsRemoved(bool value)
+    {
+        PlayerPrefs.SetInt(KEY_ADS_REMOVED, value ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    public static bool IsAdsRemoved()
+    {
+        return PlayerPrefs.GetInt(KEY_ADS_REMOVED, 0) == 1;
     }
 }

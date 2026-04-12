@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,7 @@ public class SettingsController : MonoBehaviour
     [SerializeField] private Image musicHandleImage;
     [SerializeField] private Image sfxHandleImage;
     [SerializeField] private Image vibrationHandleImage;
+    [SerializeField] private TMP_InputField nameInputField;
 
     [SerializeField] private float moveDuration = 0.2f; 
     [SerializeField] private float handleOnX = 35f; 
@@ -23,6 +25,9 @@ public class SettingsController : MonoBehaviour
     {
         UpdateVisuals(false);
         SoundManager.Instance.PlayMusic();
+        string currentName = PlayerPrefs.GetString("PlayerDisplayName", "");
+        if (nameInputField != null)
+            nameInputField.text = currentName;
     }
 
     public void ToggleMusic()
@@ -78,5 +83,17 @@ public class SettingsController : MonoBehaviour
             handle.anchoredPosition = new Vector2(targetX, handle.anchoredPosition.y);
             if (handleImg) handleImg.color = targetColor;
         }
+    }
+    public async void ConfirmNameButton()
+    {
+        if (nameInputField == null) return;
+
+        string newName = nameInputField.text.Trim();
+        if (string.IsNullOrEmpty(newName)) return;
+
+        SoundManager.Instance?.PlayClick();
+
+        if (LeaderboardManager.Instance != null)
+            await LeaderboardManager.Instance.UpdatePlayerNameAsync(newName);
     }
 }

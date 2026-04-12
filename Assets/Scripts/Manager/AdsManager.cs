@@ -44,15 +44,20 @@ public class AdsManager : MonoBehaviour
     {
         MobileAds.Initialize((InitializationStatus status) =>
         {
-            LoadBannerAd();
             LoadInterstitialAd();
             LoadRewardedAd();
         });
     }
 
     #region --- Banner Ads ----
-    public void LoadBannerAd()
+        public void ShowBannerAd()
     {
+        if (_bannerView != null)
+        {
+            _bannerView.Show();
+            return;
+        }
+        
         AdRequest request = new AdRequest();
         _bannerView = new BannerView(_bannerId, AdSize.Banner, AdPosition.Bottom);
         _bannerView.LoadAd(request);
@@ -63,9 +68,11 @@ public class AdsManager : MonoBehaviour
     {
         if (_bannerView != null)
         {
-            _bannerView.Hide();
+            _bannerView.Destroy();
+            _bannerView = null; 
         }
     }
+
     #endregion
     #region --- Interstitial Ads ----
     public void LoadInterstitialAd()
@@ -84,7 +91,8 @@ public class AdsManager : MonoBehaviour
 
     public void ShowInterstitialAd()
     {
-        if(_interstitialAd != null && _interstitialAd.CanShowAd())
+        if (SaveSystem.IsAdsRemoved()) return;
+        if (_interstitialAd != null && _interstitialAd.CanShowAd())
         {
             _interstitialAd.Show();
         }

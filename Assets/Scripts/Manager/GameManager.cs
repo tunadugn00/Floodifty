@@ -12,12 +12,13 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        // DỜI LÊN ĐÂY! Đọc Mode ngay lập tức khi Scene vừa load lên
-        // 1 = Endless, 0 = Normal
         isEndlessMode = PlayerPrefs.GetInt("GameMode", 0) == 1;
+
     }
 
     public void SetState(GameState newState)
