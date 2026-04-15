@@ -75,12 +75,10 @@ public class LeaderboardUIController : MonoBehaviour
 
         if (entries == null) return;
 
-        bool meInTop = false;
 
         foreach (var entry in entries)
         {
             bool isMe = entry.PlayerId == myPlayerId;
-            if (isMe) meInTop = true;
             SpawnRow(entry, isMe);
         }
 

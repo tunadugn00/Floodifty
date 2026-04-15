@@ -23,15 +23,22 @@ Main systems:
 - ItemManager & CurrencyManager: handles in-game economy, purchases, and booster inventory.
 - SceneTransitionManager: manages smooth DOTween screen fades and loading spinners.
 - AI Solver: utilizes Monte Carlo Tree Search (MCTS) with Time Budget optimization for the Hint system.
-
+- Dynamic Difficulty Adjustment (DDA):
+    .PlayerPerformanceTracker: Monitors real-time stats including WinRate, TotalStages, and AvgMovesLeft.
+    .Difficulty Tiers: Automatically classifies players into Beginner, Normal, and Expert to adjust PCG parameters (Grid size, Color count, and Move limits).
+    .Persistence: Stats are stored via PlayerPrefs to ensure difficulty consistency across sessions.
+- In-App Purchasing (IAP):
+    .IAPManager: Implements IStoreListener for secure transaction handling via Unity Purchasing.
+    .Products: Supports Non-Consumable (Remove Ads) and Consumables (Coin Packs, Item Packs).
+    .Mock Store: Includes a simulation mode for testing purchase flows without real transactions.
 Scenes:
 - MainMenu
 - LevelSelect
 - GameScene
 
 Tech stack:
-- Unity
+- Unity 6
 - C#
 - DOTween
-- Unity Gaming Services (UGS) - Leaderboards
+- Unity Gaming Services (UGS)
 - Google Mobile Ads SDK

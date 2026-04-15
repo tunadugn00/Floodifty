@@ -68,6 +68,8 @@ public class UIController : MonoBehaviour
             int totalBefore = EndlessScoreManager.Instance.GetSessionScore() - earned;
             int totalAfter = EndlessScoreManager.Instance.GetSessionScore();
 
+            PlayerPerformanceTracker.Instance?.RecordStageResult(true, movesLeft);
+
             StartCoroutine(AnimateCounter(scoreMainText, totalBefore, totalAfter, scoreBonusText, earned));
         }
         else
@@ -130,6 +132,8 @@ public class UIController : MonoBehaviour
 
         if (GameManager.Instance.isEndlessMode && EndlessScoreManager.Instance != null)
         {
+            PlayerPerformanceTracker.Instance?.RecordStageResult(false, 0);
+
             int final = EndlessScoreManager.Instance.GetSessionScore();
             finalScoreGroup?.SetActive(true);
             if (finalScoreText != null) finalScoreText.text = $"Score: {final:N0}";
@@ -206,6 +210,8 @@ public class UIController : MonoBehaviour
 
     public void MainMenuButton()
     {
+        if (ItemManager.Instance != null)
+            ItemManager.Instance.EndTutorialMode();
         Time.timeScale = 1f;
         GameManager.Instance.SetState(GameManager.GameState.Playing);
         SceneTransitionManager.Instance.LoadSceneWithAni("MainMenu");

@@ -16,34 +16,45 @@ public static class EndlessLevelGenerator
         public string[,] layout;
     }
 
-    public static GeneratedLevel GenerateLevel(int endlessStage)
+    public static GeneratedLevel GenerateLevel(int endlessStage,
+    PlayerPerformanceTracker.PlayerTier tier = PlayerPerformanceTracker.PlayerTier.Normal)
     {
-        // Công thức độ khó: Cứ 3 màn tăng 1 bước.
         int targetMoves = Mathf.Clamp(3 + (endlessStage / 3), 3, 8);
 
-        // TẠO LEVEL NGƯỢC (Chỉ cần chạy 1-2 lần là ra map chuẩn 100%)
+        // Bonus moves theo tier
+        int bonusMoves = tier switch
+        {
+            PlayerPerformanceTracker.PlayerTier.Beginner => 2,
+            PlayerPerformanceTracker.PlayerTier.Normal => 1,
+            PlayerPerformanceTracker.PlayerTier.Expert => 0,
+            _ => 1
+        };
+
+        // Blob adjustment theo tier
+        int blobBonus = tier switch
+        {
+            PlayerPerformanceTracker.PlayerTier.Beginner => -1, // ít blob hơn
+            PlayerPerformanceTracker.PlayerTier.Normal => 0,
+            PlayerPerformanceTracker.PlayerTier.Expert => 1, // nhiều blob hơn
+            _ => 0
+        };
+
         for (int i = 0; i < 5; i++)
         {
             string targetCol;
-            // Đẻ map bằng phương pháp "Đổ mực"
-            var board = GenGuaranteedBoard(targetMoves, out targetCol);
-
-            // Cho BFS quét 1 lần duy nhất để đo số bước CHÍNH XÁC nhất hiển thị lên UI
+            var board = GenGuaranteedBoard(targetMoves, out targetCol, blobBonus);
             int? actualMoves = MinMovesClickAnywhere(board, targetCol, targetMoves + 2);
 
             if (actualMoves.HasValue && actualMoves.Value > 0)
             {
-                Debug.Log($"[Endless] Đã sinh Stage {endlessStage} ngon lành! Cần {actualMoves.Value} bước.");
-                // Cộng thêm 1 bước du di cho người chơi dễ thở
-                return CreateLevelData(board, targetCol, actualMoves.Value);
+                Debug.Log($"[Endless] Stage {endlessStage} | Tier: {tier} | Moves: {actualMoves.Value + bonusMoves}");
+                return CreateLevelData(board, targetCol, actualMoves.Value + bonusMoves);
             }
         }
 
-        // LƯỚI AN TOÀN CUỐI CÙNG: Ép nhét map vào để game không bao giờ crash
-        Debug.LogWarning("[Endless] Cứu nguy khẩn cấp! Nhét map trực tiếp.");
         string safeTarget;
-        var safeBoard = GenGuaranteedBoard(targetMoves, out safeTarget);
-        return CreateLevelData(safeBoard, safeTarget, targetMoves + 2);
+        var safeBoard = GenGuaranteedBoard(targetMoves, out safeTarget, blobBonus);
+        return CreateLevelData(safeBoard, safeTarget, targetMoves + bonusMoves + 2);
     }
 
     private static GeneratedLevel CreateLevelData(string[,] board, string target, int moves)
@@ -52,18 +63,17 @@ public static class EndlessLevelGenerator
     }
 
     // ===== THUẬT TOÁN "TẠO MAP NGƯỢC" (CONSTRUCTIVE GENERATION) =====
-    static string[,] GenGuaranteedBoard(int difficulty, out string targetColor)
+    static string[,] GenGuaranteedBoard(int difficulty, out string targetColor, int blobBonus = 0)
     {
         var board = new string[ROWS, COLS];
         targetColor = COLORS[Random.Range(0, COLORS.Length)];
 
-        // BƯỚC 1: Tô toàn bộ bảng thành trạng thái THẮNG (cùng 1 màu)
         for (int r = 0; r < ROWS; r++)
             for (int c = 0; c < COLS; c++)
                 board[r, c] = targetColor;
 
-        // BƯỚC 2: Vẽ các "vết bẩn" (Blob) đè lên. Vẽ bao nhiêu vết bẩn, tốn bấy nhiêu bước dọn.
-        int blobsToDraw = difficulty + Random.Range(1, 4);
+        // Áp dụng blobBonus vào số lượng blob
+        int blobsToDraw = Mathf.Max(1, difficulty + Random.Range(1, 4) + blobBonus);
 
         for (int i = 0; i < blobsToDraw; i++)
         {
@@ -72,8 +82,7 @@ public static class EndlessLevelGenerator
 
             int startR = Random.Range(0, ROWS);
             int startC = Random.Range(0, COLS);
-            int blobSize = Random.Range(4, 10); // Độ to của vết bẩn
-
+            int blobSize = Random.Range(4, 10);
             DrawBlob(board, startR, startC, randomColor, blobSize);
         }
 

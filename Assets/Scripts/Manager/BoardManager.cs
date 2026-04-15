@@ -235,7 +235,9 @@ public class BoardManager : MonoBehaviour
     }
     public void LoadEndlessLevel(int stage)
     {
-        currentEndlessLevel = EndlessLevelGenerator.GenerateLevel(stage);
+        var tier = PlayerPerformanceTracker.Instance?.GetTier()
+           ?? PlayerPerformanceTracker.PlayerTier.Normal;
+        currentEndlessLevel = EndlessLevelGenerator.GenerateLevel(stage, tier);
 
         rows = currentEndlessLevel.rows;
         cols = currentEndlessLevel.cols;

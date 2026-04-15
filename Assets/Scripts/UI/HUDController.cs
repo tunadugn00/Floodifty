@@ -41,21 +41,21 @@ public class HUDController : MonoBehaviour
     public void SetLevel(int level, bool isEndless)
     {
         if (levelLabel != null)
-            levelLabel.text = isEndless ? "Stage" : "Level";
+            levelLabel.text = isEndless ? "Mốc" : "Màn";
 
         if (levelValue != null)
             levelValue.text = level.ToString();
     }
     public void SetMove(int moves)
     {
-        movesText.text = "Moves Left:";
+        movesText.text = "Lượt còn:";
         movesValue.text = moves.ToString();
 
         movesValue.transform.DOPunchScale(new Vector3(0.5f, 0.5f, 0.5f), 0.3f, 1, 0.5f);
     }
     public void SetGoal(Tile.TileColor color)
     {
-        goalText.text = "Target:";
+        goalText.text = "Mục tiêu:";
         goalValue.text = color.ToString();
         goalValue.color = GetColorForTile(color);
     }

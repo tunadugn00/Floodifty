@@ -102,7 +102,7 @@ public class TutorialManager : MonoBehaviour
     private IEnumerator StepStart()
     {
         ShowOverlay();
-        ShowInstruction("Fill all tiles with the target color!\n     Tap to continue.");
+        ShowInstruction("Tô hết bảng theo màu mục tiêu!\r\nChạm để tiếp tục.");
         HideHighlight();
 
         yield return WaitForScreenTap();
@@ -111,7 +111,7 @@ public class TutorialManager : MonoBehaviour
 
     private IEnumerator StepHint()
     {
-        ShowInstruction("Use Hint to see the best move!");
+        ShowInstruction("Dùng Gợi ý để xem nước đi tốt nhất!");
         ShowHighlight(hintButton?.GetComponent<RectTransform>(), new Vector2(200, 150));
 
         boardManager.SetUIBlocking(false);
@@ -128,13 +128,13 @@ public class TutorialManager : MonoBehaviour
         Tile.TileColor fillColor = GetSuggestedColor();
         RectTransform colorBtnRect = GetColorButtonRect(fillColor);
 
-        ShowInstruction("Select this color to fill!");
+        ShowInstruction("Chọn màu này để tô!");
         ShowHighlight(colorBtnRect, new Vector2(300, 200));
 
         boardManager.SetUIBlocking(false);
         yield return WaitForColorButtonTap(fillColor);
 
-        ShowInstruction("Tap the board to fill!");
+        ShowInstruction("Chạm bảng để tô!");
         HideHighlight();
 
         bool tileTapped = false;
@@ -151,7 +151,7 @@ public class TutorialManager : MonoBehaviour
 
     private IEnumerator StepHammer()
     {
-        ShowInstruction("Use Hammer to break the rock!");
+        ShowInstruction("Dùng Búa để phá đá!");
         ShowHighlight(hammerButton?.GetComponent<RectTransform>(), new Vector2(200, 150));
 
         bool hammerArmed = false;
@@ -163,7 +163,7 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => hammerArmed);
         boardManager.OnHammerArmed -= OnHammerArmed;
 
-        ShowInstruction("Tap the rock to break it!");
+        ShowInstruction("Chạm vào đá để phá!");
 
         Tile[,] tiles = boardManager.GetTiles();
         int rockR = -1, rockC = -1;
@@ -193,7 +193,7 @@ public class TutorialManager : MonoBehaviour
 
     private IEnumerator StepBomb()
     {
-        ShowInstruction("Color Bomb changes all tiles of one color!");
+        ShowInstruction("Bom màu đổi toàn bộ một màu!");
         ShowHighlight(colorBombButton?.GetComponent<RectTransform>(), new Vector2(200, 150));
 
         bool bombArmed = false;
@@ -207,12 +207,12 @@ public class TutorialManager : MonoBehaviour
         Tile.TileColor bombColor = GetNonGoalColor();
         RectTransform colorBtnRect = GetColorButtonRect(bombColor);
 
-        ShowInstruction("Select a color first!");
+        ShowInstruction("Chọn màu trước!");
         ShowHighlight(colorBtnRect, new Vector2(300, 200));
 
         yield return WaitForColorButtonTap(bombColor);
 
-        ShowInstruction("Now tap a tile on the board to activate!");
+        ShowInstruction("Bây giờ chạm vào một ô trên bảng để kích hoạt!");
 
         Tile[,] tiles = boardManager.GetTiles();
         Tile.TileColor goalColor = boardManager.GetGoalColor();
